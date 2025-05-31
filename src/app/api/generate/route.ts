@@ -1,37 +1,65 @@
-import { OpenAI } from 'openai';
+import { GoogleGenAI } from "@google/genai";
 import { buildCoverLetterPrompt } from "../../../utils/promptBuilder";
+import { checkUserUsage } from "@/middleware/checkUser";
 
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
+
 
 // Preferred and fallback model
-const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1-nano';
-const FALLBACK_MODEL = process.env.OPENAI_MODEL_FALLBACK || 'gpt-4o-mini';
+const DEFAULT_MODEL = process.env.GOOGLE_MODEL || 'Gemini-2.0-Flash';
+const FALLBACK_MODEL = process.env.GOOGLE_MODEL_FALLBACK || 'Gemini-2.0-Flash-Lite';
 
 
 export async function POST(req: Request) {
+  console.log("route entered.");
+  const contentType = req.headers.get("content-type");
+  console.log("headers", req.headers);
+  let resume: string | Buffer;
+  let job: string;
+  let email: string;
+  if (contentType?.includes("application/json")) {
 
-  const { resume, job } = await req.json();
-  const { system, user } = buildCoverLetterPrompt(resume, job);
+    const data = await req.json();
+    resume = data.resume;
+    job = data.job;
+    email = data.email;
+  } 
+  else if (contentType?.includes("multipart/form-data")) {
+    const formData = await req.formData();
+    const file = formData.get("resume") as File;
+    
+    // Convert File to Buffer
+    const arrayBuffer = await file.arrayBuffer();
+    resume = Buffer.from(arrayBuffer);    
+    job = formData.get("job") as string;
+    email = formData.get("email") as string;
+  }
+  else {
+    return new Response("Unsupported content type", { status: 400 });
+  }
+  // Check if user has exceeded usage limits
+  const usageCheck = await checkUserUsage(email);
+  if (!usageCheck.allowed) {
+    if (usageCheck.reason === "User has not registered. Register first before use.") {
+      console.warn("User has not registered. Register first before use.");
+      return new Response("User has not registered. Register first before use.", { status: 403 });
+    }
+    console.warn("Usage limit reached. Please upgrade.");
+    return new Response("Usage limit reached. Please upgrade.", { status: 403 });
+  }
 
-  // const messages: ChatCompletionMessageParam[]= [
-  // { role: "system", content: system },
-  // { role: "user", content: user },  
-  //   ];
+  const prompt = await buildCoverLetterPrompt(resume, job);
+
 
   try {
-    const response = await client.responses.create({
+    const response = await ai.models.generateContent({
       model: DEFAULT_MODEL,
-      input: [
-          { role: "system", content: system },
-          {
-              role: "user",
-              content: user,
-          },
-      ]
+      contents: prompt
     });
-    console.log("Request sent to OpenAI!");
-    return new Response(JSON.stringify({ output: response.output_text }), {
+    console.log(response.text);
+
+    return new Response(JSON.stringify({ output: response.text }), {
       headers: { 'Content-Type': 'application/json' },
     });
 
@@ -39,18 +67,13 @@ export async function POST(req: Request) {
     console.warn(`Fallback to ${FALLBACK_MODEL} due to error:`, err);
 
     // Retry with fallback model
-    const retryResponse = await client.responses.create({
-      model: DEFAULT_MODEL,
-      input: [
-          { role: "system", content: system },
-          {
-              role: "user",
-              content: user,
-          },
-      ]
+    const retryResponse = await ai.models.generateContent({
+      model: FALLBACK_MODEL,
+      contents: prompt
     });
+    console.log(retryResponse.text);
 
-    return new Response(JSON.stringify({ output: retryResponse.output_text }), {
+    return new Response(JSON.stringify({ output: retryResponse.text }), {
       headers: { 'Content-Type': 'application/json' },
     });
   }
