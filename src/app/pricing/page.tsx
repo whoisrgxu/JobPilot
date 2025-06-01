@@ -1,3 +1,6 @@
+'use client';
+import { useAtom } from 'jotai';
+import { menuOpenAtom } from '@/store/atoms';
 import React from "react";
 
 const plans = [
@@ -26,8 +29,10 @@ const plans = [
 ];
 
 export default function PricingPage() {
+
+  const [menuOpen] = useAtom(menuOpenAtom);
     return (
-        <main className="min-h-screen py-12 px-4">
+        <main className={`min-h-screen py-12 px-4 ${menuOpen ? "hidden" : ""}`}>
             <h1 className="text-4xl font-bold text-center mb-8">Pricing Plans</h1>
             <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
                 {plans.map((plan) => (
