@@ -22,6 +22,8 @@ export default function Login() {
         // Save JWT in localStorage (or cookie if preferred)
         localStorage.setItem("token", data.token);
         setStatus("Login successful!");
+        // Redirect to the generate page
+        window.location.href = "/generate";
       } else {
         setStatus(`Error: ${data.message}`);
       }
@@ -49,7 +51,7 @@ export default function Login() {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button
-        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+        className="w-full bg-pink-500 text-white p-2 rounded hover:bg-pink-600"
         onClick={handleLogin}
       >
         Login
