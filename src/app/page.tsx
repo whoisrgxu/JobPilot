@@ -11,7 +11,7 @@ export default function Home() {
             Instantly Generate Tailored Cover Letters with AI
           </h1>
           <p className="text-lg text-gray-400 max-w-xl mb-10">
-            Save time and impress recruiters by creating professional, personalized cover letters in seconds — powered by GPT-4.1.
+            Save time and impress recruiters by creating professional, personalized cover letters in seconds — powered by Google Gemini
           </p>
         </div>
       </div>
