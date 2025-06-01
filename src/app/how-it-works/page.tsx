@@ -23,7 +23,7 @@ export default function HowItWorksPage() {
         <section>
           <h2 className="text-2xl font-semibold mb-2">3. Review and Customize</h2>
           <p>
-            You'll see your generated cover letter right away. You can copy it, edit it, or use it as a starting point 
+            You&#39;ll see your generated cover letter right away. You can copy it, edit it, or use it as a starting point 
             to craft your final version.
           </p>
         </section>
