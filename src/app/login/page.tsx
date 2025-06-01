@@ -1,8 +1,11 @@
 'use client';
-
+import { useAtom } from 'jotai';
+import { menuOpenAtom } from '@/store/atoms';
 import { useState } from "react";
 
 export default function Login() {
+
+  const [menuOpen] = useAtom(menuOpenAtom);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
@@ -34,7 +37,7 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border shadow rounded">
+    <div className={`max-w-md mx-auto mt-10 p-6 border shadow rounded ${menuOpen ? "hidden" : ""}`}>
       <h1 className="text-xl font-bold mb-4">Login</h1>
       <input
         type="email"

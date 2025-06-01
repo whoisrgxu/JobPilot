@@ -1,6 +1,12 @@
+'use client';
+import { useAtom } from 'jotai';
+import { menuOpenAtom } from '@/store/atoms';
+
 export default function HowItWorksPage() {
+  const [menuOpen] = useAtom(menuOpenAtom);
+
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
+    <div className={`max-w-4xl mx-auto px-6 py-12 ${menuOpen ? "hidden" : ""}`}>
       <h1 className="text-4xl font-bold mb-6 text-center">How It Works</h1>
 
       <div className="space-y-10 text-lg leading-relaxed">
@@ -23,7 +29,7 @@ export default function HowItWorksPage() {
         <section>
           <h2 className="text-2xl font-semibold mb-2">3. Review and Customize</h2>
           <p>
-            You&#39;ll see your generated cover letter right away. You can copy it, edit it, or use it as a starting point 
+            You will see your generated cover letter right away. You can copy it, edit it, or use it as a starting point 
             to craft your final version.
           </p>
         </section>
