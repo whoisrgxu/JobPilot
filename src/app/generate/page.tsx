@@ -54,6 +54,7 @@ export default function Generate() {
         body.append("email", email);
         body.append("tone", selectedTone);
         headers = {};
+        console.log("FormData body:", body);
       } else {
         body = JSON.stringify({ resume, job, email, tone: selectedTone });
         headers = { "Content-Type": "application/json" };
