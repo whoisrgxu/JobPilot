@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { GoogleGenAI } from "@google/genai";
 import { buildCoverLetterPrompt } from "../../../utils/promptBuilder";
 import { checkUserUsage } from "@/middleware/checkUser";
@@ -7,7 +9,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
 
 // Preferred and fallback model
-const DEFAULT_MODEL = process.env.GOOGLE_MODEL || 'Gemini-2.0-flash';
+const DEFAULT_MODEL = process.env.GOOGLE_MODEL || 'gemini-2.0-flash';
 const FALLBACK_MODEL = process.env.GOOGLE_MODEL_FALLBACK || 'gemini-2.0-flash-lite';
 
 
