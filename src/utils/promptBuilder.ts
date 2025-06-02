@@ -3,10 +3,12 @@ import pdfParse from "pdf-parse";
 
 export async function buildCoverLetterPrompt(resume: string | Buffer, job: string, tone: string): Promise<string> {
   let resumeText: string;
+  console.log("Buffer:", resume);
   if (Buffer.isBuffer(resume)) {
     // PDF case: extract text
     const parsed = await pdfParse(resume);
     resumeText = parsed.text;
+    console.log("Parsed resume text:", resumeText);
   } else {
     // Plain text resume
     resumeText = resume;
