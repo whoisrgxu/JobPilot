@@ -1,5 +1,3 @@
-export const runtime = "nodejs";
-
 import { GoogleGenAI } from "@google/genai";
 import { buildCoverLetterPrompt } from "../../../utils/promptBuilder";
 import { checkUserUsage } from "@/middleware/checkUser";

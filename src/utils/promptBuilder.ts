@@ -1,5 +1,6 @@
 import pdfParse from "pdf-parse";
 
+
 export async function buildCoverLetterPrompt(resume: string | Buffer, job: string, tone: string): Promise<string> {
   let resumeText: string;
   if (Buffer.isBuffer(resume)) {
