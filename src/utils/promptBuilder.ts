@@ -1,6 +1,6 @@
 import pdfParse from "pdf-parse";
 
-export async function buildCoverLetterPrompt(resume: string | Buffer, job: string): Promise<string> {
+export async function buildCoverLetterPrompt(resume: string | Buffer, job: string, tone: string): Promise<string> {
   let resumeText: string;
   if (Buffer.isBuffer(resume)) {
     // PDF case: extract text
@@ -12,7 +12,7 @@ export async function buildCoverLetterPrompt(resume: string | Buffer, job: strin
   }  
   const prompt = `
     You are an expert career coach and resume writer.
-    Given the following resume and job description, generate a professional and personalized cover letter that highlights the candidate's strengths and alignment with the job.
+    Given the following resume and job description, generate a personalized cover letter that highlights the candidate's strengths and alignment with the job.
 
     [Resume]
     ${resumeText}
@@ -20,7 +20,7 @@ export async function buildCoverLetterPrompt(resume: string | Buffer, job: strin
     [Job Description]
     ${job}
 
-    The tone should be confident and enthusiastic, and the letter should be under 350 words.
+    The tone should be ${tone}, and the letter should be under 350 words.
       `.trim();
 
   return prompt;

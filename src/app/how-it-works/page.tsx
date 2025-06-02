@@ -6,13 +6,13 @@ export default function HowItWorksPage() {
   const [menuOpen] = useAtom(menuOpenAtom);
 
   return (
-    <div className={`max-w-4xl mx-auto px-6 py-12 ${menuOpen ? "hidden" : ""}`}>
+    <div className={`max-w-4xl mx-auto text-neutral-700 dark:text-rose-50 px-6 py-12 ${menuOpen ? "hidden" : ""}`}>
       <h1 className="text-4xl font-bold mb-6 text-center">How It Works</h1>
 
       <div className="space-y-10 text-lg leading-relaxed">
         <section>
           <h2 className="text-2xl font-semibold mb-2">1. Input Your Resume & Job Description</h2>
-          <p>
+          <p className="text-neutral-600 dark:text-neutral-300">
             Simply paste your resume and the job description into the form — or upload your resume as a PDF.
             We support both formats so you can choose what works best for you.
           </p>
@@ -20,7 +20,7 @@ export default function HowItWorksPage() {
 
         <section>
           <h2 className="text-2xl font-semibold mb-2">2. AI Builds Your Cover Letter</h2>
-          <p>
+          <p className="text-neutral-600 dark:text-neutral-300">
             Our tool uses advanced AI models to read and understand your resume and the job posting. 
             It then generates a personalized, professional cover letter tailored to the specific opportunity.
           </p>
@@ -28,7 +28,7 @@ export default function HowItWorksPage() {
 
         <section>
           <h2 className="text-2xl font-semibold mb-2">3. Review and Customize</h2>
-          <p>
+          <p className="text-neutral-600 dark:text-neutral-300">
             You will see your generated cover letter right away. You can copy it, edit it, or use it as a starting point 
             to craft your final version.
           </p>
@@ -36,7 +36,7 @@ export default function HowItWorksPage() {
 
         <section>
           <h2 className="text-2xl font-semibold mb-2">Why Use Our Tool?</h2>
-          <ul className="list-disc pl-6 mt-2 space-y-2">
+          <ul className="list-disc pl-6 mt-2 space-y-2 text-neutral-600 dark:text-neutral-300">
             <li>Save time — no more struggling to start from scratch.</li>
             <li>Stand out — our AI highlights your most relevant skills and experience.</li>
             <li>Stay professional — polished tone and structure in seconds.</li>
