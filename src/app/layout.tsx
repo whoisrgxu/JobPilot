@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CoverCraft - AI-Powered Cover Letter Generator",
+  title: "JobPilot - AI-Powered Cover Letter Generator",
   description: "Instantly create personalized cover letters with AI",
 };
 
@@ -31,7 +31,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main>
-          <div className="min-h-screen">
+          <div className="min-h-screen bg-[#faf6f6] dark:bg-[#0a0a0a] transition-colors duration-300">
           <NavMenu />
           {children}
           </div>

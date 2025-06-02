@@ -31,13 +31,13 @@ const faqs = [
 
 export default function FAQPage() {
     return (
-        <main className="max-w-2xl mx-auto py-12 px-4">
+        <main className="dark:text-rose-50 text-neutral-700 max-w-2xl mx-auto py-12 px-4">
             <h1 className="text-3xl font-bold mb-10">Frequently Asked Questions</h1>
             <div className="space-y-6">
                 {faqs.map((faq, idx) => (
                     <div key={idx}>
                         <h2 className="text-xl font-semibold">{faq.question}</h2>
-                        <p className="text-gray-400">{faq.answer}</p>
+                        <p className="text-neutral-600 dark:text-neutral-300">{faq.answer}</p>
                     </div>
                 ))}
             </div>

@@ -11,7 +11,9 @@
   position: relative;
   overflow: visible;
   background: transparent;
+  z-index: 0;
 }
+
 
 .card::after,
 .card::before {
