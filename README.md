@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JobPilot
+
+JobPilot is an AI-powered web application that helps job seekers instantly generate tailored, professional cover letters. By leveraging advanced AI models, users can simply paste their resume and a job description—or upload their resume as a PDF—and receive a personalized cover letter in seconds.
+
+## Features
+
+- **AI-Generated Cover Letters:** Instantly create unique, high-quality cover letters tailored to your resume and the job description.
+- **Multiple Input Modes:** Paste your resume as text or upload a PDF file.
+- **Customizable Tone:** Choose from several tones (Enthusiastic, Professional, Confident, Friendly, Persuasive, Creative) to match your application style.
+- **User Registration & Authentication:** Securely register and log in to manage your cover letter generations.
+- **Modern UI:** Responsive, dark-mode friendly interface built with Next.js, Tailwind CSS, and Material UI.
+- **Privacy First:** Your data is processed securely and never shared.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (18+ recommended)
+- npm, yarn, pnpm, or bun
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/jobpilot.git
+   cd jobpilot
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   # or
+   bun install
+   ```
 
-## Learn More
+3. **Set up environment variables:**  
+   Create a `.env.local` file in the root directory and add the required environment variables for your AI model, authentication, and any API keys. For example:
+   ```env
+   AI_MODEL_API_KEY=your-api-key-here
+   AI_MODEL_PROVIDER=your-provider-name
+   AUTH_SECRET=your-auth-secret
+   # Add any other required variables here
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   # or
+   bun dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+- `src/app/` — Main application code (pages, components, styles)
+- `src/store/atoms.ts` — State management using Jotai
+- `src/app/specialStyling.css` — Custom CSS for card effects and UI enhancements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Technologies Used
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js](https://nextjs.org/)
+- [React](https://react.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Material UI](https://mui.com/)
+- [Jotai](https://jotai.org/) for state management
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+**JobPilot** — Save time, stand out, and apply with confidence.

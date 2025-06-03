@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "./specialStyling.css";
 import NavMenu from '@/components/NavMenu';
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
           <div className="min-h-screen bg-[#faf6f6] dark:bg-[#0a0a0a] transition-colors duration-300">
           <NavMenu />
           {children}
+          <Footer />
           </div>
         </main>
       </body>
