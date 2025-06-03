@@ -72,6 +72,7 @@ JobPilot is an AI-powered web application that helps job seekers instantly gener
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Material UI](https://mui.com/)
 - [Jotai](https://jotai.org/) for state management
+- [Google Gemini API](https://ai.google.dev/)
 
 ## License
 
