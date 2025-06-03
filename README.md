@@ -74,6 +74,8 @@ JobPilot is an AI-powered web application that helps job seekers instantly gener
 - [Jotai](https://jotai.org/) for state management
 - [Google Gemini API](https://ai.google.dev/)
 
+## Deployed Link: https://jobpilot.rogerxu.dev/ 
+
 ## License
 
 This project is licensed under the MIT License.
