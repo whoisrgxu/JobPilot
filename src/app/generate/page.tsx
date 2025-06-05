@@ -8,6 +8,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import CustomAlert from "@/components/CustomAlert";
 
 
 export default function Generate() {
@@ -21,6 +22,8 @@ export default function Generate() {
   const [selectedTone, setSelectedTone] = useState("Enthusiastic");
   const tones = ["Enthusiastic", "Professional", "Confident", "Friendly", "Persuasive", "Creative"];
   const [showOutput, setShowOutput] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
 
   // Get token from local storage
@@ -66,6 +69,16 @@ export default function Generate() {
       });
       const data = await response.json();
       console.log("Response data:", data);
+      if (data.output === "User has not registered. Register first before use.") {
+        setShowAlert(true);
+        setAlertMessage("User has not registered. Register first.");
+        return;
+      }
+      if (data.output === "Usage limit reached. Please upgrade.") {
+        setShowAlert(true);
+        setAlertMessage("Usage limit reached. Please upgrade.");
+        return;
+      }  
       setOutput(data.output || "No response received.");
       setShowOutput(true);
     } catch {
@@ -77,6 +90,7 @@ export default function Generate() {
   const texasAreaClass = "shadow-lg dark:shadow-sm dark:shadow-neutral-800 dark:bg-neutral-800 dark:border-none dark:text-white border border-neutral-200 bg-neutral-50 w-full md:w-1/2 h-48 md:h-80 p-3 placeholder-gray-350 rounded resize-none focus:outline-none";
   return (
     <div className={`flex flex-col items-center p-4 sm:p-8 w-full min-h-screen bg-[#181a23]${menuOpen ? " hidden" : ""}`}>
+
       {/* Mode Toggle */}
       <div className="mb-4 flex flex-col sm:flex-row gap-2">
         <FormControl>
@@ -142,6 +156,9 @@ export default function Generate() {
           </button>
         </div>
       </div>
+      {showAlert && (
+        <CustomAlert message={alertMessage} />
+      )}      
       <div className="h-8" />
 <div className="w-full max-w-3xl overflow-x-auto mb-4">
   <div className="flex gap-2 w-max">
@@ -161,8 +178,6 @@ export default function Generate() {
     ))}
   </div>
 </div>
-
-
 
         {/* Output */}
         <div className={`${texasAreaClass} `} style={{
