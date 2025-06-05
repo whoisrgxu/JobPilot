@@ -45,11 +45,10 @@ export async function POST(req: Request) {
   const usageCheck = await checkUserUsage(email);
   if (!usageCheck.allowed) {
     if (usageCheck.reason === "User has not registered. Register first before use.") {
-      console.warn("User has not registered. Register first before use.");
-      return new Response("User has not registered. Register first before use.", { status: 403 });
+
+      return new Response(JSON.stringify({output: "User has not registered. Register first before use."}));
     }
-    console.warn("Usage limit reached. Please upgrade.");
-    return new Response("Usage limit reached. Please upgrade.", { status: 403 });
+    return new Response(JSON.stringify({output: "Usage limit reached. Please upgrade."}));
   }
 
   const prompt = await buildCoverLetterPrompt(resume, job, tone);

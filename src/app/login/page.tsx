@@ -37,7 +37,7 @@ export default function Login() {
   };
 
   return (
-    <div className={`max-w-md mx-auto mt-10 p-6 border shadow rounded ${menuOpen ? "hidden" : ""}`}>
+    <div className={`max-w-md mx-auto mt-40 p-6 md:border shadow rounded ${menuOpen ? "hidden" : ""}`}>
       <h1 className="text-xl font-bold mb-4">Login</h1>
       <input
         type="email"
