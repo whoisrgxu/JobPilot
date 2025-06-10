@@ -32,7 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main>
-          <div className="min-h-screen bg-[#faf6f6] dark:bg-[#0a0a0a] transition-colors duration-300">
+          <div className="min-h-screen bg-[#faf6f6] dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300">
           <NavMenu />
           {children}
           <Footer />
