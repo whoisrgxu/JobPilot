@@ -1,4 +1,9 @@
 import pdfParse from "pdf-parse";
+import fs from "fs";
+import path from "path";
+
+// Reference the file so it’s bundled
+fs.readFileSync(path.join(process.cwd(), "test/data/05-versions-space.pdf"));
 
 
 export async function buildCoverLetterPrompt(resume: string | Buffer, job: string, tone: string): Promise<string> {
