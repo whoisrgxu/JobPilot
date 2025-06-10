@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/generate/route.[jt]s": {
+    "src/app/api/generate/route.[jt]s": {
       "includeFiles": ["test/**"]
     }
   }
