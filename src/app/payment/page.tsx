@@ -61,7 +61,7 @@ function CheckoutForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10 p-6 border rounded shadow-lg shadow-gray-300">
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-25 p-6 md:border rounded shadow-lg shadow-gray-300">
       <h2 className="text-xl font-semibold mb-6">Pay with Stripe</h2>
 
       <label className="block mb-4">

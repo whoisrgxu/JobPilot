@@ -9,9 +9,12 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CustomAlert from "@/components/CustomAlert";
+import MyDropzone from "@/components/DropZone";
+
 
 
 export default function Generate() {
+
   const [inputMode, setInputMode] = useState<"text" | "pdf">("text");
   const [resume, setResume] = useState("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -130,12 +133,9 @@ export default function Generate() {
             onChange={(e) => setResume(e.target.value)}
           />
         ) : (
-          <input
-            type="file"
-            accept=".pdf"
-            className={`${texasAreaClass}`}
-            onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-          />
+        <div className={`${texasAreaClass}`}>
+          <MyDropzone setFile={setResumeFile} />
+        </div>
         )}
         <textarea
           className={`${texasAreaClass}`}
@@ -144,7 +144,6 @@ export default function Generate() {
           onChange={(e) => setJob(e.target.value)}
         />
       </div>
-
       {/* Button */}
       <div className="card" style={{ padding: "1px"}}>
         <div className="w-full max-w-3xl flex justify-center">
@@ -161,24 +160,24 @@ export default function Generate() {
         <CustomAlert message={alertMessage} />
       )}      
       <div className="h-8" />
-<div className="w-full max-w-3xl overflow-x-auto mb-4">
-  <div className="flex gap-2 w-max">
-    <p className="flex items-center dark:text-white whitespace-nowrap pr-2">Tones:</p>
-    {tones.map((tone) => (
-      <button
-        key={tone}
-        onClick={() => setSelectedTone(tone)}
-        className={`px-3 py-1 rounded-full border text-sm whitespace-nowrap transition ${
-          selectedTone === tone
-            ? "bg-pink-600 text-white"
-            : "bg-neutral-200 dark:bg-neutral-700 dark:text-white text-gray-800"
-        }`}
-      >
-        {tone}
-      </button>
-    ))}
-  </div>
-</div>
+      <div className="w-full max-w-3xl overflow-x-auto mb-4">
+        <div className="flex gap-2 w-max">
+          <p className="flex items-center dark:text-white whitespace-nowrap pr-2">Tones:</p>
+          {tones.map((tone) => (
+            <button
+              key={tone}
+              onClick={() => setSelectedTone(tone)}
+              className={`px-3 py-1 rounded-full border text-sm whitespace-nowrap transition ${
+                selectedTone === tone
+                  ? "bg-pink-600 text-white"
+                  : "bg-neutral-200 dark:bg-neutral-700 dark:text-white text-gray-800"
+              }`}
+            >
+              {tone}
+            </button>
+          ))}
+        </div>
+      </div>
 
         {/* Output */}
         <div className={`${texasAreaClass} `} style={{
