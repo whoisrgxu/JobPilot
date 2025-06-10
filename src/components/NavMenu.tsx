@@ -43,12 +43,12 @@ export default function NavMenu() {
       </div>
       <ul
         className={`
-          w-full lg:w-2/3
+          w-full lg:w-4/5
           flex-col lg:flex-row
           flex
           ${menuOpen ? 'flex' : 'hidden'}
           lg:flex
-          justify-center space-y-4 lg:space-y-0 lg:space-x-8
+          justify-center space-y-4 lg:space-y-0 xl:space-x-4 lg:space-x-2
           text-md font-medium
           mt-4 lg:mt-0
         `}

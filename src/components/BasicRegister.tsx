@@ -9,60 +9,65 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
   const [registerationFailMsg, setRegistrationFailMsg] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
 
   // Helper function to validate email format
   const isValidEmail = (email: string) => {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(String(email).toLowerCase());
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
   };
   // Helper function to validate password strength
   const isValidPassword = (password: string) => {
-  // At least 8 characters, one uppercase, one lowercase, one number, and one special character
-  const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
-  return re.test(password);
+    // At least 8 characters, one uppercase, one lowercase, one number, and one special character
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
+    return re.test(password);
   };
 
   const handleRegister = async () => {
-  setRegistrationFailMsg("");
-  if (!email || !password) {
-    setRegistrationFailMsg("Please fill in all fields.");
-    return;
-  }
-  // Validate email and password
-  if(isValidEmail(email) === false) {
-    setRegistrationFailMsg("Please enter a valid email address.");
-    return;
-  }
-  if(isValidPassword(password) === false) {
-    setRegistrationFailMsg("Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number.");
-    return;
-  }
-  setStatus("Registering...");
-  try {
-    const res = await fetch("/api/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, isPremium }),
-    });
-
-    if (res.ok) {
-      setStatus("Registration successful!");
-      setEmail("");
-      setPassword("");
-      if (isPremium) {
-        window.location.href = "/payment"
-      }
-      // Optionally redirect to register success page
-      else window.location.href = "/registerSuccess";
-    } else {
-    const data = await res.json();
-    setStatus(`Error: ${data.message}`);
+    setRegistrationFailMsg("");
+    if (!email || !password) {
+      setRegistrationFailMsg("Please fill in all fields.");
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    setStatus("Registration failed. Please try again.");
-  }
+    // Validate email and password
+    if(isValidEmail(email) === false) {
+      setRegistrationFailMsg("Please enter a valid email address.");
+      return;
+    }
+    if(isValidPassword(password) === false) {
+      setRegistrationFailMsg("Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setRegistrationFailMsg("Passwords do not match.");
+      return;
+    }
+    setStatus("Registering...");
+    try {
+      const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, isPremium }),
+      });
+
+      if (res.ok) {
+        setStatus("Registration successful!");
+        setEmail("");
+        setPassword("");
+        if (isPremium) {
+          window.location.href = "/payment"
+        }
+        // Optionally redirect to register success page
+        else window.location.href = "/registerSuccess";
+      } else {
+      const data = await res.json();
+      setStatus(`Error: ${data.message}`);
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus("Registration failed. Please try again.");
+    }
   };
 
   return (
@@ -86,6 +91,13 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
       className="w-full p-2 mb-4 border rounded placeholder-gray-400"
       value={password}
       onChange={(e) => setPassword(e.target.value)}
+    />
+    <input
+      type="password"
+      placeholder="Confirm your password"
+      className="w-full p-2 mb-4 border rounded placeholder-gray-400"
+      value={confirmPassword}
+      onChange={(e) => setConfirmPassword(e.target.value)}
     />
 
     <button
