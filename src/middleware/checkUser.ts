@@ -7,6 +7,9 @@ export const checkUserUsage = async (email: string) => {
   if (!user) {
     return { allowed: false, reason: "User has not registered. Register first before use." };
   }
+  if (user.isPremium) {
+    return { allowed: true };
+  }
   // Reset monthly usage if it's a new month
   const lastReset = new Date(user.lastReset);
   const now = new Date();

@@ -72,7 +72,7 @@ export default function NavMenu() {
           </>
           ):(
           <>
-            <NavItem href="/register" onClick={() => setMenuOpen(false)}>Register</NavItem>
+            <NavItem href="/pricing" onClick={() => setMenuOpen(false)}>Register</NavItem>
             <NavItem href="/login" onClick={() => setMenuOpen(false)}>Login</NavItem>
           </>)
         }

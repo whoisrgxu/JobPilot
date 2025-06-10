@@ -1,7 +1,7 @@
 'use client';
-import { useAtom } from 'jotai';
-import { menuOpenAtom } from '@/store/atoms';
+
 import React from "react";
+import {useState} from "react";
 
 const plans = [
     {
@@ -23,24 +23,25 @@ const plans = [
             "Priority email support",
             "AI suggestions",
         ],
-        cta: "Upgrade",
-        highlighted: true,
+        cta: "Get Started",
     },
 ];
 
-export default function PricingPage() {
+export default function Plans() {
 
-  const [menuOpen] = useAtom(menuOpenAtom);
+
+    const [planType, setPlanType] = useState("Pro");
     return (
-        <main className={`min-h-screen py-12 px-4 ${menuOpen ? "hidden" : ""}`}>
-            <h1 className="text-4xl font-bold text-center mb-8">Pricing Plans</h1>
+        <main className={`min-h-screen py-12 px-4`}>
+            <h1 className="text-4xl font-bold text-center mb-8">Choose A Plan</h1>
             <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
                 {plans.map((plan) => (
                     <div
                         key={plan.name}
                         className={`rounded-lg shadow-lg p-8 bg-indigo-50 flex flex-col items-center ${
-                            plan.highlighted ? "border-2 border-pink-600 scale-105" : ""
-                        }`}
+                            planType === plan.name ? "border-2 border-pink-600 scale-105" : ""
+                        } cursor-pointer`}
+                        onClick={() => setPlanType(plan.name)}
                     >
                         <h2 className="text-2xl font-semibold text-gray-700 mb-4">{plan.name}</h2>
                         <div className="text-3xl font-bold text-gray-700 mb-6">{plan.price}</div>
@@ -53,10 +54,15 @@ export default function PricingPage() {
                         </ul>
                         <button
                             className={`px-6 py-2 rounded font-semibold ${
-                                plan.highlighted
+                                planType === plan.name
                                     ? "bg-pink-500 text-white hover:bg-pink-600"
                                     : "bg-gray-300 text-gray-800"
                             }`}
+                            onClick={e => {
+                                e.stopPropagation();
+                                // redirect to registering page
+                                window.location.href = `/register${plan.name}`;
+                            }}
                         >
                             {plan.cta}
                         </button>
