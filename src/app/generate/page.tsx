@@ -98,7 +98,17 @@ export default function Generate() {
       {/* Mode Toggle */}
       <div className="mb-4 flex flex-col sm:flex-row gap-2">
         <FormControl>
-          <FormLabel id="resumeContent">Provide Resume</FormLabel>
+            <FormLabel 
+            id="resumeContent" 
+            sx={{ 
+              color: { xs: 'black', sm: 'black', md: 'black', lg: 'black', xl: 'black' }, 
+              '.dark &': { color: 'white' }, // for dark mode
+              '&.Mui-focused': { color: 'green' } 
+            }}
+            className="dark:text-white"
+            >
+            Choose how to provide resume:
+            </FormLabel>
             <RadioGroup
             name="radio-buttons-group"
             row
@@ -107,14 +117,28 @@ export default function Generate() {
             >
             <FormControlLabel
               value="text"
-              control={<Radio color="success"/>}
+              control={<Radio 
+                sx={{
+                  color: 'gray', // default color
+                  '&.Mui-checked': {
+                    color: 'green', // checked color (green = 'success')
+                  },
+                }}
+              />}
               label={
               <span className="text-black dark:text-white">Paste Text</span>
               }
             />
             <FormControlLabel
               value="pdf"
-              control={<Radio color="success"/>}
+              control={<Radio 
+                sx={{
+                  color: 'gray', // default color
+                  '&.Mui-checked': {
+                    color: 'green', // checked color (green = 'success')
+                  },
+                }}
+              />}
               label={
               <span className="text-black dark:text-white">Upload PDF</span>
               }
