@@ -62,7 +62,12 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        router.push(isPremium ? "/payment" : "/registerSuccess");
+        if (isPremium) {
+          localStorage.setItem("PremiumRegisteringInProgress", "true");
+          router.push("/payment");
+        } else{
+          router.push("registerSuccess");
+        } 
       } else {
         setStatus(`Error: ${data.message}`);
       }

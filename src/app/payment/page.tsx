@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
@@ -148,11 +148,19 @@ function CheckoutForm() {
 export default function PaymentPage() {
 
   const router = useRouter();
-
+  const hasValidate = useRef(false);
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login"); // redirect to login if no token
+    if (hasValidate.current) return;
+    hasValidate.current = true;
+    const PremiumRegisteringInProgress = localStorage.getItem("PremiumRegisteringInProgress");
+    console.log("PremiumRegisteringInProgress: ", PremiumRegisteringInProgress);
+    if (PremiumRegisteringInProgress !== "true") {
+      router.replace("/login"); 
+    } else {
+      // Delay removal to avoid race condition on re-runs
+      setTimeout(() => {
+        localStorage.removeItem("PremiumRegisteringInProgress");
+      }, 1000);
     }
   }, [router]);
   return (

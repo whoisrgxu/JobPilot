@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Skip on merge commit to development
+        if: github.ref == 'refs/heads/development' && github.event.head_commit.parents[1] != null
+        run: echo "Merge commit to development, skipping CI." && exit 0
       - uses: actions/checkout@v4
 
       - name: Use Node.js
@@ -31,7 +34,7 @@ jobs:
         run: npm test
 
   deploy-preview:
-    if: github.ref == 'refs/heads/development'
+    if: github.ref == 'refs/heads/development' && github.event.head_commit.parents[1] == null
     needs: ci-check
     runs-on: ubuntu-latest
 
