@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState} from "react";
 import { useAtom } from 'jotai';
 import { menuOpenAtom } from '@/store/atoms';
 import Radio from '@mui/material/Radio';
@@ -14,6 +14,7 @@ import MyDropzone from "@/components/DropZone";
 
 
 export default function Generate() {
+
 
   const [inputMode, setInputMode] = useState<"text" | "pdf">("text");
   const [resume, setResume] = useState("");
