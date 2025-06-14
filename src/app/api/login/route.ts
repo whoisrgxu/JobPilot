@@ -9,11 +9,11 @@ export async function POST(req: Request) {
   const { email, password } = await req.json();
 
   const user = await User.findOne({ email });
-  const isPremium = user.isPremium;
+
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
   }
-
+  const isPremium = user.isPremium;
   const token = signToken({ email, isPremium });
 
   return NextResponse.json({ token }, { status: 200 });

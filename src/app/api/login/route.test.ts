@@ -7,7 +7,6 @@ import User from '@/models/user';
 import bcrypt from 'bcryptjs';
 import { signToken } from '@/lib/jwt';
 
-
 jest.mock('@/lib/db', () => ({
   connectDB: jest.fn(),
 }));
@@ -46,7 +45,7 @@ describe('POST /api/login', () => {
   });
 
   it('returns 401 for incorrect password', async () => {
-    (User.findOne as jest.Mock).mockResolvedValue({ email: 'user@example.com', password: 'hashed' });
+    (User.findOne as jest.Mock).mockResolvedValue({ email: 'user@example.com', password: 'hashed', isPremium: false });
     (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
     const req = new Request('http://localhost/api/login', {
@@ -63,7 +62,13 @@ describe('POST /api/login', () => {
   });
 
   it('returns 200 and token for valid credentials', async () => {
-    (User.findOne as jest.Mock).mockResolvedValue({ email: 'user@example.com', password: 'hashed' });
+    const mockUser = {
+      email: 'user@example.com',
+      password: 'hashed',
+      isPremium: true,
+    };
+
+    (User.findOne as jest.Mock).mockResolvedValue(mockUser);
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
     (signToken as jest.Mock).mockReturnValue('mocked-token');
 
@@ -78,6 +83,6 @@ describe('POST /api/login', () => {
 
     expect(res.status).toBe(200);
     expect(body.token).toBe('mocked-token');
-    expect(signToken).toHaveBeenCalledWith({ email: 'user@example.com' });
+    expect(signToken).toHaveBeenCalledWith({ email: 'user@example.com', isPremium: true });
   });
 });
