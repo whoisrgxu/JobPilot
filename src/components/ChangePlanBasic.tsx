@@ -29,8 +29,12 @@ const ChangePlanBasic: React.FC<ChangePlanBasicProps> = ({ userId }) => {
 
             setPlan(newPlan);
             setMessage(`Plan changed to ${newPlan}`);
-        } catch (error: any) {
-            setMessage(error.message || 'An error occurred');
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setMessage(error.message);
+            } else {
+                setMessage('An error occurred');
+            }
         } finally {
             setLoading(false);
         }
