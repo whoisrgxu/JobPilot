@@ -8,9 +8,14 @@ import {
   useElements,
   CardNumberElement,
   CardExpiryElement,
-  CardCvcElement
+  CardCvcElement,
 } from '@stripe/react-stripe-js';
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -20,12 +25,14 @@ function CheckoutForm() {
 
   const [name, setName] = useState('');
   const [status, setStatus] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('');
-
     if (!stripe || !elements) return;
+
+    setIsLoading(true);
 
     const res = await fetch('/api/create-payment-intent', {
       method: 'POST',
@@ -47,100 +54,92 @@ function CheckoutForm() {
     } else if (result.paymentIntent?.status === 'succeeded') {
       setStatus('✅ Payment successful!');
     }
+
+    setIsLoading(false);
   };
 
   const elementStyle = {
     style: {
       base: {
         fontSize: '16px',
-        color: '#32325d',
-        '::placeholder': { color: '#a0aec0' }
+        color: '#1f2937',
+        '::placeholder': { color: '#9ca3af' }
       },
-      invalid: { color: '#fa755a' }
+      invalid: { color: '#f87171' }
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-25 p-6 md:border rounded shadow-lg shadow-gray-300">
-      <h2 className="text-xl font-semibold mb-6">Pay with Stripe</h2>
+    <form
+      onSubmit={handleSubmit}
+      className={cn(
+        "border md:border md:border-gray-300 dark:md:border-gray-500 rounded-2xl shadow-md",
+        "max-w-[28rem] mx-auto p-6",
+        "mt-20 md:mt-40",
+        "bg-gray-50 dark:bg-gray-950"
+      )}
+    >
+      <h2 className="text-xl font-bold mb-6 text-gray-800 dark:text-white">Pay with Stripe</h2>
 
-      <label className="block mb-4">
-        Name on Card
-        <input
+      <div className="mb-4">
+        <Label htmlFor="card-name" className="text-gray-700 dark:text-white">Name on Card</Label>
+        <Input
+          id="card-name"
           type="text"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           required
-          className="w-full mt-2 px-3 py-2 border rounded"
+          className="bg-white text-black dark:bg-gray-800 dark:text-white mt-1"
         />
-      </label>
-
-
-<label className="block mb-4 relative">
-  Card Number
-  <div className="relative">
-    <CardNumberElement
-      options={elementStyle}
-      className="mt-2 w-full p-2 pr-28 border rounded"
-    />
-    <div className="absolute top-1/2 right-3 flex space-x-1 transform -translate-y-1/2">
-      <Image
-        src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/visa.svg"
-        alt="Visa"
-        width={20}
-        height={20}
-      />
-      <Image
-        src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/mastercard.svg"
-        alt="Mastercard"
-        width={20}
-        height={20}
-      />
-      <Image
-        src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/americanexpress.svg"
-        alt="Amex"
-        width={20}
-        height={20}
-      />
-      <Image
-        src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/applepay.svg"
-        alt="UnionPay"
-        width={20}
-        height={20}
-      />
-    </div>
-  </div>
-</label>
-
-
-
-      <div className="flex gap-3 mb-4">
-        <label className="flex-1 block">
-          Expiry
-          <CardExpiryElement
-            options={elementStyle}
-            className="mt-2 p-2 border rounded"
-          />
-        </label>
-
-        <label className="flex-1 block">
-          CVC
-          <CardCvcElement
-            options={elementStyle}
-            className="mt-2 p-2 border rounded"
-          />
-        </label>
       </div>
 
-      <button
-        type="submit"
-        className="w-full py-3 bg-pink-600 text-white rounded hover:bg-pink-700"
-        disabled={!stripe}
-      >
-        Pay $9.00
-      </button>
+      <div className="mb-4">
+        <Label htmlFor="card-number" className="text-gray-700 dark:text-white">Card Number</Label>
+        <div className="relative">
+          <CardNumberElement
+            id="card-number"
+            options={elementStyle}
+            className="mt-2 w-full p-2 pr-28 border rounded-md bg-white dark:bg-gray-800 dark:text-white"
+          />
+          <div className="absolute top-1/2 right-3 flex space-x-1 transform -translate-y-1/2 dark:invert">
+            <Image src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/visa.svg" alt="Visa" width={20} height={20} />
+            <Image src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/mastercard.svg" alt="Mastercard" width={20} height={20} />
+            <Image src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/americanexpress.svg" alt="Amex" width={20} height={20} />
+            <Image src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/applepay.svg" alt="ApplePay" width={20} height={20} />
+          </div>
+        </div>
+      </div>
 
-      {status && <p className="mt-4 text-sm text-center">{status}</p>}
+      <div className="flex gap-3 mb-4">
+        <div className="flex-1">
+          <Label className="text-gray-700 dark:text-white">Expiry</Label>
+          <CardExpiryElement
+            options={elementStyle}
+            className="mt-2 p-2 border rounded-md w-full bg-white dark:bg-gray-800 dark:text-white"
+          />
+        </div>
+        <div className="flex-1">
+          <Label className="text-gray-700 dark:text-white">CVC</Label>
+          <CardCvcElement
+            options={elementStyle}
+            className="mt-2 p-2 border rounded-md w-full bg-white dark:bg-gray-800 dark:text-white"
+          />
+        </div>
+      </div>
+
+      <Button
+        type="submit"
+        className="w-full py-2.5 mt-2 text-white cursor-pointer hover:brightness-110 transition-colors flex items-center justify-center gap-2 rounded-md"
+        style={{ backgroundColor: 'oklch(59.2% 0.249 0.584)' }}
+        disabled={!stripe || isLoading}
+      >
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+        Pay $9.00
+      </Button>
+
+      {status && (
+        <p className="mt-4 text-sm text-gray-700 dark:text-gray-300 text-center">{status}</p>
+      )}
     </form>
   );
 }

@@ -5,6 +5,9 @@ import "./globals.css";
 import "./specialStyling.css";
 import NavMenu from '@/components/NavMenu';
 import Footer from "@/components/Footer";
+import InactivityWrapper from '@/components/InactivityWrapper'
+import ClientHydrate from '@/components/ClientHydrate';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,13 +34,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main>
-          <div className="min-h-screen bg-[#faf6f6] dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300">
-          <NavMenu />
-          {children}
-          <Footer />
-          </div>
-        </main>
+        <InactivityWrapper>
+          <ClientHydrate />
+          <main>
+            <div className="min-h-screen bg-[#faf6f6] dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300">
+            <NavMenu />
+            {children}
+            <Footer />
+            </div>
+          </main>
+        </InactivityWrapper>
       </body>
     </html>
   );

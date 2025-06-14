@@ -1,123 +1,145 @@
-"use client";
-import { useState } from "react";
+'use client';
 
-interface BasicRegisterProps{
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface BasicRegisterProps {
   isPremium: boolean;
 }
+
 export default function BasicRegister({ isPremium }: BasicRegisterProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [status, setStatus] = useState("");
-  const [registerationFailMsg, setRegistrationFailMsg] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [status, setStatus] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-
-  // Helper function to validate email format
-  const isValidEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(String(email).toLowerCase());
-  };
-  // Helper function to validate password strength
-  const isValidPassword = (password: string) => {
-    // At least 8 characters, one uppercase, one lowercase, one number, and one special character
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
-    return re.test(password);
-  };
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase());
+  const isValidPassword = (password: string) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/.test(password);
 
   const handleRegister = async () => {
-    setRegistrationFailMsg("");
-    if (!email || !password) {
-      setRegistrationFailMsg("Please fill in all fields.");
+    setErrorMsg("");
+    if (!email || !password || !confirmPassword) {
+      setErrorMsg("Please fill in all fields.");
       return;
     }
-    // Validate email and password
-    if(isValidEmail(email) === false) {
-      setRegistrationFailMsg("Please enter a valid email address.");
+    if (!isValidEmail(email)) {
+      setErrorMsg("Please enter a valid email address.");
       return;
     }
-    if(isValidPassword(password) === false) {
-      setRegistrationFailMsg("Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number.");
+    if (!isValidPassword(password)) {
+      setErrorMsg("Password must be at least 8 characters long and include uppercase, lowercase, number, and symbol.");
       return;
     }
     if (password !== confirmPassword) {
-      setRegistrationFailMsg("Passwords do not match.");
+      setErrorMsg("Passwords do not match.");
       return;
     }
+
+    setIsLoading(true);
     setStatus("Registering...");
+
     try {
       const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, isPremium }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, isPremium }),
       });
+
+      const data = await res.json();
 
       if (res.ok) {
         setStatus("Registration successful!");
         setEmail("");
         setPassword("");
-        if (isPremium) {
-          window.location.href = "/payment"
-        }
-        // Optionally redirect to register success page
-        else window.location.href = "/registerSuccess";
+        setConfirmPassword("");
+        window.location.href = isPremium ? "/payment" : "/registerSuccess";
       } else {
-      const data = await res.json();
-      setStatus(`Error: ${data.message}`);
+        setStatus(`Error: ${data.message}`);
       }
     } catch (err) {
       console.error(err);
       setStatus("Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-  <div className={`max-w-md mx-auto mt-40 p-6 md:border shadow rounded`}>
-    <h1 className="text-xl font-bold mb-4">Register ({isPremium? "Pro Tier": "Free Tier"})</h1>
-    <form
-    onSubmit={e => {
-      e.preventDefault();
-      handleRegister();
-    }}
-      >
-    <input
-      placeholder="Enter your email"
-      className="w-full p-2 mb-4 border rounded placeholder-gray-400"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-    />
-    <input
-      type="password"
-      placeholder="Enter your password"
-      className="w-full p-2 mb-4 border rounded placeholder-gray-400"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-    />
-    <input
-      type="password"
-      placeholder="Confirm your password"
-      className="w-full p-2 mb-4 border rounded placeholder-gray-400"
-      value={confirmPassword}
-      onChange={(e) => setConfirmPassword(e.target.value)}
-    />
-
-    <button
-      type="submit"
-      className="w-full bg-pink-500 text-white p-2 rounded hover:bg-pink-600"
+    <div
+      className={cn(
+        "border md:border md:border-gray-300 dark:md:border-gray-500 rounded-2xl shadow-md",
+        "max-w-[28rem] mx-auto p-6",
+        "mt-20 md:mt-40",
+        "bg-gray-50 dark:bg-gray-950"
+      )}
     >
-      Register
-    </button>
-    </form>
-    {registerationFailMsg.length > 0 ?
-    (
-      <p className="mt-4 text-sm text-red-500">
-      {registerationFailMsg}
-      </p>
-    ) : (
-      <p className="mt-4 text-sm text-gray-700">
-      {status}
-      </p>
-    )
-    }
-  </div>
+      <h1 className="text-xl font-bold mb-4">Register ({isPremium ? "Pro Tier" : "Free Tier"})</h1>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleRegister();
+        }}
+      >
+        <div className="mb-4">
+          <Label htmlFor="email" className="text-gray-700 dark:text-white">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="mt-1 bg-white text-black dark:bg-gray-800 dark:text-white"
+          />
+        </div>
+
+        <div className="mb-4">
+          <Label htmlFor="password" className="text-gray-700 dark:text-white">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="mt-1 bg-white text-black dark:bg-gray-800 dark:text-white"
+          />
+        </div>
+
+        <div className="mb-4">
+          <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-white">Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="mt-1 bg-white text-black dark:bg-gray-800 dark:text-white"
+          />
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full py-1.5 mt-2 text-white cursor-pointer hover:brightness-110 transition-colors flex items-center justify-center gap-2"
+          style={{ backgroundColor: 'oklch(59.2% 0.249 0.584)' }}
+          disabled={isLoading}
+        >
+          {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+          Register
+        </Button>
+      </form>
+
+      {errorMsg ? (
+        <p className="mt-4 text-sm text-red-500">{errorMsg}</p>
+      ) : (
+        <p className="mt-4 text-sm text-gray-700 dark:text-gray-300">{status}</p>
+      )}
+    </div>
   );
 }
