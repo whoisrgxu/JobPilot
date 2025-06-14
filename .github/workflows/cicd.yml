@@ -7,13 +7,30 @@ on:
     branches: [main]
 
 jobs:
-  ci-check:
+  precheck:
     runs-on: ubuntu-latest
-
+    outputs:
+      should_skip: ${{ steps.check.outputs.should_skip }}
     steps:
-      - name: Skip on merge commit to development
-        if: github.ref == 'refs/heads/development' && github.event.head_commit.parents[1] != null
-        run: echo "Merge commit to development, skipping CI." && exit 0
+      - name: Check if merge commit to development
+        id: check
+        run: |
+          echo "Checking if should skip CI..."
+          if [[ "${{ github.ref }}" == "refs/heads/development" ]]; then
+            parents=$(git log -1 --pretty=%P)
+            parent_count=$(echo $parents | wc -w)
+            if [ "$parent_count" -gt 1 ]; then
+              echo "should_skip=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+          fi
+          echo "should_skip=false" >> $GITHUB_OUTPUT
+
+  ci-check:
+    needs: precheck
+    if: needs.precheck.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v4
 
       - name: Use Node.js
@@ -34,23 +51,19 @@ jobs:
         run: npm test
 
   deploy-preview:
-    if: github.ref == 'refs/heads/development' && github.event.head_commit.parents[1] == null
-    needs: ci-check
+    needs: [precheck, ci-check]
+    if: needs.precheck.outputs.should_skip != 'true' && github.ref == 'refs/heads/development'
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Deploy to Vercel Preview
         run: npx vercel --token=${{ secrets.JOBPILOTTOKEN }} --confirm --name job-pilot
 
   deploy-production:
-    if: github.ref == 'refs/heads/main'
-    needs: ci-check
+    needs: [precheck, ci-check]
+    if: needs.precheck.outputs.should_skip != 'true' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Deploy to Vercel Production
         run: npx vercel --prod --token=${{ secrets.JOBPILOTTOKEN }} --confirm --name job-pilot
