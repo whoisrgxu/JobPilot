@@ -16,7 +16,7 @@ export function useAuthHydration() {
       } catch {
         // invalid token
         localStorage.removeItem('token');
-        setAuth(null);
+        setAuth({ token: '', email: '' });
       }
     }
   }, [setAuth]);
