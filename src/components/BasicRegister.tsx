@@ -6,12 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface BasicRegisterProps {
   isPremium: boolean;
 }
 
 export default function BasicRegister({ isPremium }: BasicRegisterProps) {
+
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -59,7 +62,7 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        window.location.href = isPremium ? "/payment" : "/registerSuccess";
+        router.push(isPremium ? "/payment" : "/registerSuccess");
       } else {
         setStatus(`Error: ${data.message}`);
       }
