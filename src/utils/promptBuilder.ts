@@ -6,7 +6,7 @@ import path from "path";
 fs.readFileSync(path.join(process.cwd(), "test/data/05-versions-space.pdf"));
 
 
-export async function buildCoverLetterPrompt(resume: string | Buffer, job: string, tone: string): Promise<string> {
+export async function buildCoverLetterPrompt(resume: string | Buffer, job: string, industry: string): Promise<string> {
   let resumeText: string;
   console.log("Buffer:", resume);
   if (Buffer.isBuffer(resume)) {
@@ -19,17 +19,30 @@ export async function buildCoverLetterPrompt(resume: string | Buffer, job: strin
     resumeText = resume;
   }  
   const prompt = `
-    You are an expert career coach and resume writer.
-    Given the following resume and job description, generate a personalized cover letter that highlights the candidate's strengths and alignment with the job.
+You are a job application evaluator specializing in the ${industry} industry.
 
-    [Resume]
-    ${resumeText}
+Analyze how well the following resume matches the provided job description.
 
-    [Job Description]
-    ${job}
+Return **only** a valid JSON object using the exact structure below — no code fences or additional commentary.
 
-    The tone should be ${tone}, and the letter should be under 350 words.
-      `.trim();
+{
+  "matchScore": number (e.g. 75),
+  "strengths": [string, string, ...],
+  "gaps": [string, string, ...],
+  "suggestions": [string, string, ...],
+  "summary": string
+}
+
+---
+
+Resume:
+${resumeText}
+
+---
+
+Job Description:
+${job}
+  `.trim();
 
   return prompt;
 }

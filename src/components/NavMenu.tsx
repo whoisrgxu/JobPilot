@@ -46,7 +46,7 @@ export default function NavMenu() {
       >
         {/* Navigation Links */}
         <NavItem href="/" onClick={() => setMenuOpen(false)}>Home</NavItem>
-        <NavItem href="/generate" onClick={() => setMenuOpen(false)}>Generate Cover Letter</NavItem>
+        <NavItem href="/generate" onClick={() => setMenuOpen(false)}>Analyze Job Fit</NavItem>
         <NavItem href="/how-it-works" onClick={() => setMenuOpen(false)}>How It Works</NavItem>
         <NavItem href="/pricing" onClick={() => setMenuOpen(false)}>Pricing</NavItem>
         <NavItem href="/faq" onClick={() => setMenuOpen(false)}>FAQ</NavItem>
