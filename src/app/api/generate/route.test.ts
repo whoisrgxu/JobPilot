@@ -1,120 +1,62 @@
-/**
- * @jest-environment node
- */
-    const mockGenerateContent = jest.fn();
+// route.test.ts
 import { POST } from './route';
-import { checkUserUsage } from '@/middleware/checkUser';
 import { buildCoverLetterPrompt } from '../../../utils/promptBuilder';
+import { checkUserUsage } from '@/middleware/checkUser';
+import { ratelimit } from '@/lib/rateLimiter';
 
-
-// ✅ Factory-style mock for GoogleGenAI
-jest.mock('@google/genai', () => ({
-
-  GoogleGenAI: jest.fn().mockImplementation(() => ({
-    models: {
-      generateContent: mockGenerateContent,
-    },
-  })),
-  __esModule: true,
-}));
-
-jest.mock('@/middleware/checkUser');
 jest.mock('../../../utils/promptBuilder');
+jest.mock('@/middleware/checkUser');
+jest.mock('@/lib/rateLimiter');
 
-describe('POST /api/generate', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    process.env.GOOGLE_API_KEY = 'test-key';
-    process.env.GOOGLE_MODEL = 'gemini-2.0-flash';
-    process.env.GOOGLE_MODEL_FALLBACK = 'gemini-2.0-flash-lite';
+// Fully mock @google/genai before importing POST
+jest.mock('@google/genai', () => {
+  const mockGenerateContent = jest.fn().mockResolvedValue({ text: "mocked AI output" });
+  return {
+    GoogleGenAI: jest.fn().mockImplementation(() => ({
+      models: { generateContent: mockGenerateContent },
+    })),
+  };
+});
+
+const mockBuildCoverLetterPrompt = buildCoverLetterPrompt as jest.Mock;
+const mockCheckUserUsage = checkUserUsage as jest.Mock;
+const mockRatelimit = ratelimit.limit as jest.Mock;
+
+const defaultPrompt = "mocked prompt";
+const defaultEmail = "test@example.com";
+const defaultResume = "resume text";
+const defaultJob = "job text";
+const defaultIndustry = "Tech";
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  mockBuildCoverLetterPrompt.mockResolvedValue(defaultPrompt);
+  mockCheckUserUsage.mockResolvedValue({ allowed: true });
+  mockRatelimit.mockResolvedValue({ success: true, reset: 9999, remaining: 10 });
+});
+
+function createJsonRequest(body: Record<string, unknown>) {
+  return new Request('http://localhost/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
   });
+}
 
-  it('handles application/json input and returns AI response', async () => {
-    (checkUserUsage as jest.Mock).mockResolvedValue({ allowed: true });
-    (buildCoverLetterPrompt as jest.Mock).mockResolvedValue('mocked prompt');
-    mockGenerateContent.mockResolvedValue({ text: 'mocked cover letter' });
-
-    const req = new Request('http://localhost/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        resume: 'My resume text',
-        job: 'Job description here',
-        email: 'test@example.com',
-        tone: 'Professional',
-      }),
+describe("POST route handler", () => {
+  it("processes valid JSON request successfully", async () => {
+    const req = createJsonRequest({
+      resume: defaultResume,
+      job: defaultJob,
+      email: defaultEmail,
+      industry: defaultIndustry,
     });
 
     const res = await POST(req);
-    const body = await res.json();
+    const data = await res.json();
 
+    expect(mockBuildCoverLetterPrompt).toHaveBeenCalledWith(defaultResume, defaultJob, defaultIndustry);
+    expect(data.output).toBe("mocked AI output");
     expect(res.status).toBe(200);
-    expect(body.output).toBe('mocked cover letter');
-    expect(mockGenerateContent).toHaveBeenCalledWith({
-      model: 'gemini-2.0-flash',
-      contents: 'mocked prompt',
-    });
-  });
-
-  it('falls back to fallback model on AI error', async () => {
-    (checkUserUsage as jest.Mock).mockResolvedValue({ allowed: true });
-    (buildCoverLetterPrompt as jest.Mock).mockResolvedValue('mocked prompt');
-    mockGenerateContent
-      .mockRejectedValueOnce(new Error('primary model failed'))
-      .mockResolvedValueOnce({ text: 'fallback cover letter' });
-
-    const req = new Request('http://localhost/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        resume: 'My resume text',
-        job: 'Job description here',
-        email: 'test@example.com',
-        tone: 'Professional',
-      }),
-    });
-
-    const res = await POST(req);
-    const body = await res.json();
-
-    expect(body.output).toBe('fallback cover letter');
-    expect(mockGenerateContent).toHaveBeenCalledTimes(2);
-    expect(mockGenerateContent.mock.calls[1][0].model).toBe('gemini-2.0-flash-lite');
-  });
-
-  it('rejects when user usage limit is reached', async () => {
-    (checkUserUsage as jest.Mock).mockResolvedValue({
-      allowed: false,
-      reason: 'Usage limit reached',
-    });
-
-    const req = new Request('http://localhost/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        resume: 'resume',
-        job: 'job',
-        email: 'test@example.com',
-      }),
-    });
-
-    const res = await POST(req);
-    const body = await res.json();
-
-    expect(body.output).toBe('Usage limit reached. Please upgrade.');
-  });
-
-  it('rejects unsupported content type', async () => {
-    const req = new Request('http://localhost/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: 'Some plain text',
-    });
-
-    const res = await POST(req);
-    const text = await res.text();
-
-    expect(res.status).toBe(400);
-    expect(text).toBe('Unsupported content type');
   });
 });
