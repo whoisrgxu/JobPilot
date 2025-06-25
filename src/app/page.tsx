@@ -14,7 +14,7 @@ export default function Home() {
       <div className="card w-full max-w-4xl">
         <div className="w-full whitespace-pre-wrap bg-gray-50 p-4 sm:p-8 rounded-[10px] text-neutral-700 dark:bg-gray-950 dark:text-rose-50">
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-left mb-4 sm:mb-6">
-            Instantly Analyze Your Resume's Fit for Any Job
+            Instantly Analyze Your Resume&#39;s Fit for Any Job
           </h1>
           <p className="text-base sm:text-lg text-neutral-600 dark:text-neutral-300 max-w-xl mb-6 sm:mb-10">
             Upload your resume and job description to get an AI-powered match score, a summary of strengths and gaps, and actionable improvement suggestions — in seconds.
