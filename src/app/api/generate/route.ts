@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { buildCoverLetterPrompt } from "../../../utils/promptBuilder";
 import { checkUserUsage } from "@/middleware/checkUser";
+import { ratelimit } from "@/lib/rateLimiter";
 
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
@@ -18,14 +19,14 @@ export async function POST(req: Request) {
   let resume: string | Buffer;
   let job: string;
   let email: string;
-  let tone: string;
+  let industry: string;
   if (contentType?.includes("application/json")) {
 
     const data = await req.json();
     resume = data.resume;
     job = data.job;
     email = data.email;
-    tone = data.tone || "Enthusiastic"; // Default tone if not provided
+    industry = data.industry || "any"; // Default industry to any if not provided
   } 
   else if (contentType?.includes("multipart/form-data")) {
     const formData = await req.formData();
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
     resume = Buffer.from(arrayBuffer);    
     job = formData.get("job") as string;
     email = formData.get("email") as string;
-    tone = formData.get("tone") as string || "Enthusiastic"; // Default tone if not provided
+    industry = formData.get("industry") as string || "Enthusiastic"; // Default industry if not provided
   }
   else {
     return new Response("Unsupported content type", { status: 400 });
@@ -50,8 +51,20 @@ export async function POST(req: Request) {
     }
     return new Response(JSON.stringify({output: "Usage limit reached. Please upgrade."}));
   }
+  // Rate limit check
+  const { success, reset, remaining } = await ratelimit.limit(email);
+  if (!success) {
+    return new Response(JSON.stringify({ output: "Usage temporarily limited. Please wait and try again shortly." }), {
+      status: 429,
+      headers: {
+        "X-RateLimit-Limit": "20",                // Total allowed
+        "X-RateLimit-Remaining": `${remaining}`,  // Left
+        "X-RateLimit-Reset": `${reset}`,          // When it resets (UNIX timestamp)
+      },
+    });
+  }
 
-  const prompt = await buildCoverLetterPrompt(resume, job, tone);
+  const prompt = await buildCoverLetterPrompt(resume, job, industry);
 
 
   try {

@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "JobPilot - AI-Powered Cover Letter Generator",
-  description: "Instantly create personalized cover letters with AI",
+  title: "JobPilot - AI-Powered Resume-to-Job Fit Analyzer",
+  description: "Instantly check your resume against any job description with AI. Get personalized feedback and improve your chances of landing the job.",
 };
 
 export default function RootLayout({
@@ -38,9 +38,9 @@ export default function RootLayout({
           <ClientHydrate />
           <main>
             <div className="min-h-screen bg-[#faf6f6] dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-300">
-            <NavMenu />
-            {children}
-            <Footer />
+              <NavMenu />
+              {children}
+              <Footer />
             </div>
           </main>
         </InactivityWrapper>

@@ -11,9 +11,10 @@ const plans = [
     name: "Free",
     price: "$0",
     features: [
-      "20 cover letters per month",
-      "Basic templates",
-      "Email support",
+      "20 resume-to-job analyses per month",
+      "Feedback insights",
+      "Email support"
+ 
     ],
     cta: "Get Started",
     noMatch: "Switch to free"
@@ -22,10 +23,10 @@ const plans = [
     name: "Pro",
     price: "$9/mo",
     features: [
-      "Unlimited cover letters",
-      "Premium templates",
+      "Unlimited resume-to-job analyses per month",
+      "Feedback insights",
       "Priority email support",
-      "AI suggestions",
+      "Career Roadmap"
     ],
     cta: "Get Started",
     noMatch: "Upgrade"
@@ -45,7 +46,7 @@ export default function Plans() {
   const [planType, setPlanType] = useState("Pro");
 
   return (
-    <main className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-950">
+    <main className="min-h-screen py-12 px-4">
       <h1 className="text-4xl font-bold text-center mb-8 text-gray-800 dark:text-white">
         Choose A Plan
       </h1>
