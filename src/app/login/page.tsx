@@ -103,6 +103,16 @@ export default function Login() {
       </Button>
 
       <p className="mt-4 text-sm text-gray-700 dark:text-gray-300">{status}</p>
+      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center">
+        Don&apos;t have an account?{" "}
+        <a
+          href="/pricing"
+          className="underline text-pink-600 hover:text-pink-500 dark:hover:text-pink-400"
+        >
+          Register here
+        </a>
+      </p>
+
     </div>
 
   );
