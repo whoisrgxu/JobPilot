@@ -1,18 +1,18 @@
 "use client";
-import React, {useEffect} from "react";
+import React, {/*useEffect*/} from "react";
 import Link from "next/link";
-import {useRouter} from "next/navigation"
+import {/*useRouter*/} from "next/navigation"
 
 export default function RegisterSuccess() {
 
-  const router = useRouter();
+  // const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login"); // redirect to login if no token
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     router.push("/login"); // redirect to login if no token
+  //   }
+  // }, [router]);
     return (
         <div className="min-h-screen flex flex-col justify-center items-center">
             <h1 className="text-3xl font-bold mb-4">Registration Successful!</h1>

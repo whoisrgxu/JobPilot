@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useAtom } from "jotai";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { menuOpenAtom } from "@/store/atoms";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -13,8 +13,34 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import MyDropzone from "@/components/DropZone";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Check, Loader2 } from "lucide-react";
+import { useEffect } from 'react';
+import { useSetAtom } from 'jotai';
+import { authAtom } from '@/store/authAtom';
 
 export default function Generate() {
+
+  // Check if user logged in via OAuth
+  const searchParams = useSearchParams();
+  const isOAuthLogin = searchParams.get('oauth') === 'true';
+  const setAuth = useSetAtom(authAtom); // initialize setter
+  // Store token in localStorage if user logged in via OAuth
+  useEffect(() => {
+  const storeToken = async () => {
+    const res = await fetch("/api/token");
+    const data = await res.json();
+    if (data?.token) {
+      localStorage.setItem("token", data.token);
+      const payload = JSON.parse(atob(data.token.split(".")[1]));
+      const email = payload.email || "";
+      setAuth({ token: data.token, email: email }); // set global state
+    }};
+
+    if (isOAuthLogin) {
+      storeToken();
+    }
+  }, [isOAuthLogin, setAuth]);
+
+  // State variables
   const [inputMode, setInputMode] = useState<"text" | "pdf">("text");
   const [resume, setResume] = useState("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -30,6 +56,7 @@ export default function Generate() {
   const [step, setStep] = useState(0);
   const steps = ["Analyzing resume", "Analyzing job description", "Generating report"];
 
+  // Predefined industries
   const industries = [
     "Tech",
     "Finance",
@@ -41,7 +68,7 @@ export default function Generate() {
     "Legal",
     "Telecommunications",
   ];
-
+  // Get user email from token
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   let email = "";
   if (token) {
