@@ -23,6 +23,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
+  const email = typeof window !== 'undefined' ? localStorage.getItem("registeringEmail") : null;
 
   const [name, setName] = useState('');
   const [status, setStatus] = useState('');
@@ -54,8 +55,15 @@ function CheckoutForm() {
       setStatus(`Payment failed: ${result.error.message}`);
     } else if (result.paymentIntent?.status === 'succeeded') {
       setStatus('✅ Payment successful!');
+      if (email) {
+        await fetch('/api/mark-premium', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        localStorage.removeItem("registeringEmail");
+      }
     }
-
     setIsLoading(false);
   };
 

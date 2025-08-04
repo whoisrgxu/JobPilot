@@ -64,8 +64,12 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
         setPassword("");
         setConfirmPassword("");
         if (isPremium) {
-          localStorage.setItem("PremiumRegisteringInProgress", "true");
-          router.push("/payment");
+          localStorage.setItem("PremiumRegisteringInProgress", "true"); // Flag to indicate premium registration
+          localStorage.setItem("registeringEmail", email); // Store email for payment page
+          setTimeout(() => {
+            router.push("/payment");
+          }, 100); // 100ms is enough to ensure write is flushed
+
         } else{
           router.push("registerSuccess");
         } 
