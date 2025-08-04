@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
+
 interface BasicRegisterProps {
   isPremium: boolean;
 }
@@ -79,6 +80,7 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
     }
   };
 
+
   return (
     <div
       className={cn(
@@ -142,6 +144,8 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
           Register
         </Button>
       </form>
+
+
 
       {errorMsg ? (
         <p className="mt-4 text-sm text-red-500">{errorMsg}</p>
