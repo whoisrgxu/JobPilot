@@ -1,26 +1,28 @@
-import { connectDB } from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/user";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { connectDB } from "@/lib/db";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).end();
+export async function POST(req: NextRequest) {
+  await connectDB();
 
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ message: "Email is required" });
+  const { email } = await req.json();
 
   try {
-    await connectDB();
     const updated = await User.findOneAndUpdate(
       { email },
       { isPremium: true },
       { new: true }
     );
 
-    if (!updated) return res.status(404).json({ message: "User not found" });
+    if (!updated) {
+      return NextResponse.json({ message: "User not found." }, { status: 404 });
+    }
 
-    return res.status(200).json({ message: "User upgraded to premium" });
+    return NextResponse.json({ message: "User upgraded to premium." });
   } catch (error) {
-    console.error("Premium update failed:", error);
-    return res.status(500).json({ message: "Server error" });
+    return NextResponse.json(
+      { message: "Error updating user", error },
+      { status: 500 }
+    );
   }
 }
