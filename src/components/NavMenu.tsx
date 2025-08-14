@@ -8,7 +8,7 @@ import NavItem from './NavItem';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import { useRouter } from 'next/navigation';
 import { authAtom } from "@/store/authAtom"; // import global auth state
-
+import AvatarDropdown from './AvatarDropdown';
 
 export default function NavMenu() {
   
@@ -32,44 +32,77 @@ export default function NavMenu() {
           )}
         </button>
       </div>
-      <ul
-        className={`
-          w-full lg:w-4/5
-          flex-col lg:flex-row
-          flex
-          ${menuOpen ? 'flex' : 'hidden'}
-          lg:flex
-          justify-center space-y-4 lg:space-y-0 xl:space-x-4 lg:space-x-2
-          text-md font-medium
-          mt-4 lg:mt-0
-        `}
-      >
-        {/* Navigation Links */}
-        <NavItem href="/" onClick={() => setMenuOpen(false)}>Home</NavItem>
-        <NavItem href="/generate" onClick={() => setMenuOpen(false)}>Analyze Job Fit</NavItem>
-        <NavItem href="/how-it-works" onClick={() => setMenuOpen(false)}>How It Works</NavItem>
-        <NavItem href="/pricing" onClick={() => setMenuOpen(false)}>Pricing</NavItem>
-        <NavItem href="/faq" onClick={() => setMenuOpen(false)}>FAQ</NavItem>
-          {auth.email.length > 0 ? (
-          <>
-          <NavItem href="" onClick={() => setMenuOpen(false)}>{auth.email}</NavItem>
-          <NavItem href="" onClick={() => {
-            setMenuOpen(false);
-            setAuth({ token: null, email: "" }); // clear state
-            localStorage.removeItem("token");
-            router.push("/login"); // Redirect to login page after logout
-            }
-          }>LogOut</NavItem>
-          </>
-          ):(
-          <>
-            <NavItem href="/pricing" onClick={() => setMenuOpen(false)}>Register</NavItem>
-            <NavItem href="/login" onClick={() => setMenuOpen(false)}>Login</NavItem>
-          </>)
-        }
-        <NavItem href=""><ThemeToggle /></NavItem>
+    <ul
+      className={`
+        w-full lg:w-4/5
+        flex-col lg:flex-row
+        flex
+        ${menuOpen ? 'flex' : 'hidden'}
+        lg:flex
+        /* we don't need justify-center anymore; left align on desktop */
+        lg:justify-start
+        space-y-4 lg:space-y-0 xl:space-x-4 lg:space-x-2
+        text-md font-medium
+        mt-4 lg:mt-0
+      `}
+    >
+      {/* Left-side navigation */}
+      <NavItem href="/" onClick={() => setMenuOpen(false)}>Home</NavItem>
+      <NavItem href="/generate" onClick={() => setMenuOpen(false)}>Analyze Job Fit</NavItem>
+      <NavItem href="/how-it-works" onClick={() => setMenuOpen(false)}>How It Works</NavItem>
+      <NavItem href="/pricing" onClick={() => setMenuOpen(false)}>Pricing</NavItem>
+      <NavItem href="/faq" onClick={() => setMenuOpen(false)}>FAQ</NavItem>
 
-      </ul>
+      {auth.email.length > 0 ? (
+        <>
+          {/* Desktop: avatar + theme toggle to the right */}
+          {!menuOpen ? (
+            <>
+              {/* This li with lg:ml-auto pushes the rest to the right on desktop */}
+              <li className="hidden lg:block lg:ml-auto" />
+              <li className="hidden lg:block">
+                <AvatarDropdown />
+              </li>
+              <NavItem href="">
+                <ThemeToggle />
+              </NavItem>
+            </>
+          ) : (
+            // Mobile: show as normal list items (stacked)
+            <>
+              <NavItem href="" onClick={() => setMenuOpen(false)}>{auth.email}</NavItem>
+              <NavItem href="/settings" onClick={() => setMenuOpen(false)}>Settings</NavItem>
+              <NavItem
+                href=""
+                onClick={() => {
+                  setMenuOpen(false);
+                  setAuth({ token: null, email: "" });
+                  localStorage.removeItem("token");
+                  router.push("/login");
+                }}
+              >
+                LogOut
+              </NavItem>
+              <NavItem href=""><ThemeToggle /></NavItem>
+            </>
+          )}
+        </>
+      ) : (
+        // Not logged in: Register + Login + ThemeToggle to the right (desktop)
+        <>
+          <li className="hidden lg:block lg:ml-auto" />
+          <NavItem
+            href="/pricing"
+            onClick={() => setMenuOpen(false)}
+          >
+            Register
+          </NavItem>
+          <NavItem href="/login" onClick={() => setMenuOpen(false)}>Login</NavItem>
+          <NavItem href=""><ThemeToggle /></NavItem>
+        </>
+      )}
+    </ul>
+
     </nav>
   );
 }
