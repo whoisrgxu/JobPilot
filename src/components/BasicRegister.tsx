@@ -16,6 +16,7 @@ interface BasicRegisterProps {
 export default function BasicRegister({ isPremium }: BasicRegisterProps) {
 
   const router = useRouter();
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,7 +30,7 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
 
   const handleRegister = async () => {
     setErrorMsg("");
-    if (!email || !password || !confirmPassword) {
+    if (!userName || !email || !password || !confirmPassword) {
       setErrorMsg("Please fill in all fields.");
       return;
     }
@@ -53,7 +54,7 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, isPremium }),
+        body: JSON.stringify({ userName, email, password, isPremium }),
       });
 
       const data = await res.json();
@@ -102,6 +103,17 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
           handleRegister();
         }}
       >
+        <div className="mb-4">
+          <Label htmlFor="userName" className="text-gray-700 dark:text-white">User Name</Label>
+          <Input
+            id="userName"
+            type="userName"
+            autoComplete="userName"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            className="mt-1 bg-white text-black dark:bg-gray-800 dark:text-white"
+          />
+        </div>
         <div className="mb-4">
           <Label htmlFor="email" className="text-gray-700 dark:text-white">Email</Label>
           <Input

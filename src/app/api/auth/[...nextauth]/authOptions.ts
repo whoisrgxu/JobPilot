@@ -13,29 +13,21 @@ export const authOptions = {
     strategy: "jwt" as const, // Ensures we use JWT and not session cookies
   },
   callbacks: {
-    // async signIn({ user }: { user: import("next-auth").User }) {
-    //   await connectDB();
-    //   const existingUser = await User.findOne({ email: user.email });
-
-    //   if (!existingUser) {
-    //     // Redirect to register if new Google user
-    //     return `/register?email=${encodeURIComponent(user.email ?? "")}`;
-    //   }
-
-    //   return true;
-    // },
-
     async jwt({ token, user }: { token: import("next-auth/jwt").JWT; user?: import("next-auth").User }) {
     if (user) {
       await connectDB();
       let dbUser = await User.findOne({ email: user.email });
       if (!dbUser) {
         dbUser = await User.create({
-        email: user.email,
-        usageCount: 0,
-        isPremium: false,
+          userName: user.name || "New User",
+          email: user.email,
+          usageCount: 0,
+          lastReset: new Date(),
+          isPremium: false,
         });
       }
+      token.userName = dbUser.userName;
+      console.log("User found or created:", dbUser);
       token.email = dbUser.email;
       token.isPremium = dbUser.isPremium ?? false;
     }

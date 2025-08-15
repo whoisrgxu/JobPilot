@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
   }
   const isPremium = user.isPremium;
-  const token = signToken({ email, isPremium });
-
+  const userName = user.userName;
+  const token = signToken({ userName, email, isPremium });
   return NextResponse.json({ token }, { status: 200 });
 }

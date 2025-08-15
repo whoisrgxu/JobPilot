@@ -5,10 +5,10 @@ import User from "@/models/user";
 
 export async function POST(req: Request) {
   try {
-    const { email, password, isPremium } = await req.json();
+    const { userName, email, password, isPremium } = await req.json();
 
-    if (!email || !password) {
-      return NextResponse.json({ message: "Email and password are required." }, { status: 400 });
+    if (!userName || !email || !password) {
+      return NextResponse.json({ message: "User name, Email and password are required." }, { status: 400 });
     }
     await connectDB();
     // Check if the user already exists
@@ -22,6 +22,7 @@ export async function POST(req: Request) {
 
     // Create new user
     await User.create({
+      userName,
       email,
       password: hashedPassword,
       usageCount: 0,

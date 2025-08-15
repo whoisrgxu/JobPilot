@@ -16,6 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Logout from "@mui/icons-material/Logout";
 import { authAtom } from "@/store/authAtom";
 import { menuOpenAtom } from "@/store/atoms";
@@ -103,7 +104,7 @@ export default function AvatarDropdown() {
           elevation: 6,
           sx: {
             mt: 1,
-            minWidth: 220,
+            minWidth: 150,
             borderRadius: 2,
             overflow: "visible",
             border: 1,
@@ -116,16 +117,20 @@ export default function AvatarDropdown() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
-        {auth.email && (
+        {/* {auth.userName && (
           <Box sx={{ px: 2, pt: 1.5, pb: 1 }}>
             <Typography variant="body2" color="text.secondary" noWrap>
-              {auth.email}
+              {auth.userName}
             </Typography>
           </Box>
-        )}
-
+        )} */}
+        <MenuItem>
+          <ListItemIcon>
+            <AccountCircleIcon fontSize="small" />
+          </ListItemIcon>
+        {auth.userName}
+        </MenuItem>
         <Divider />
-
         <MenuItem
           onClick={() => {
             setAnchorEl(null);
@@ -151,7 +156,7 @@ export default function AvatarDropdown() {
             Promise.resolve().then(() => {
               router.push("/login");
               setTimeout(() => {
-                setAuth({ token: null, email: "" });
+                setAuth({ token: null, email: "", userName: "" });
                 if (typeof window !== "undefined") {
                   localStorage.removeItem("token");
                 }

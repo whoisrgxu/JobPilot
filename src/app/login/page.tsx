@@ -37,12 +37,13 @@ export default function Login() {
       });
 
       const data = await res.json();
-
+      console.log("Login response", data);
       if (res.ok) {
         // Save JWT in localStorage (or cookie if preferred)
         localStorage.setItem("token", data.token);
         const payload = JSON.parse(atob(data.token.split(".")[1]));
-        setAuth({ token: data.token, email: payload.email }); // set global state
+        console.log("Login username", payload.userName);
+        setAuth({ token: data.token, userName: payload.userName, email: payload.email }); // set global state
         setStatus("Login successful!");
         // Redirect to the generate page
         router.push("/generate");

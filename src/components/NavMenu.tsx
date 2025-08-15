@@ -76,7 +76,7 @@ export default function NavMenu() {
                 href=""
                 onClick={() => {
                   setMenuOpen(false);
-                  setAuth({ token: null, email: "" });
+                  setAuth({ token: null, email: "", userName: "" }); // Clear auth state
                   localStorage.removeItem("token");
                   router.push("/login");
                 }}

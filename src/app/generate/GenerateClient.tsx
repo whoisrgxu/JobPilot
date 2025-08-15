@@ -32,7 +32,8 @@ export default function GenerateClient() {
       localStorage.setItem("token", data.token);
       const payload = JSON.parse(atob(data.token.split(".")[1]));
       const email = payload.email || "";
-      setAuth({ token: data.token, email: email }); // set global state
+      const userName = payload.userName || "";
+      setAuth({ token: data.token, userName: userName, email: email }); // set global state
     }};
 
     if (isOAuthLogin) {
@@ -210,7 +211,7 @@ export default function GenerateClient() {
       {/* Industry Selector + Custom Input */}
       <div className="w-full max-w-6xl overflow-x-auto mb-4 mt-2 md:mt-6">
         <div className="flex flex-wrap items-center gap-2 w-max">
-          <p className="flex items-center dark:text-white text-white whitespace-nowrap pr-2">Industries:</p>
+          <p className="flex items-center dark:text-white text-gray-800 whitespace-nowrap pr-2">Industries:</p>
           {industries.map((industry) => (
             <button
               key={industry}
