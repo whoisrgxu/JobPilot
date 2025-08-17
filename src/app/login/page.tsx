@@ -42,7 +42,6 @@ export default function Login() {
         // Save JWT in localStorage (or cookie if preferred)
         localStorage.setItem("token", data.token);
         const payload = JSON.parse(atob(data.token.split(".")[1]));
-        console.log("Login username", payload.userName);
         setAuth({ token: data.token, userName: payload.userName, email: payload.email }); // set global state
         setStatus("Login successful!");
         // Redirect to the generate page

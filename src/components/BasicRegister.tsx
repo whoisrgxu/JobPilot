@@ -60,7 +60,7 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
       const data = await res.json();
 
       if (res.ok) {
-        setStatus("Registration successful!");
+        setStatus("Registration successful! Please check your email to activate your account.")
         setEmail("");
         setPassword("");
         setConfirmPassword("");
@@ -72,7 +72,7 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
           }, 100); // 100ms is enough to ensure write is flushed
 
         } else{
-          router.push("registerSuccess");
+          // router.push("registerSuccess");
         } 
       } else {
         setStatus(`Error: ${data.message}`);
