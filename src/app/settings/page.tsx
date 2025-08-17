@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAtom, useSetAtom } from "jotai";
 import { menuOpenAtom } from "@/store/atoms";
 import { authAtom } from "@/store/authAtom";
@@ -29,7 +29,6 @@ function getEmailFromToken() {
 
 export default function SettingsPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [menuOpen] = useAtom(menuOpenAtom);
   const setAuth = useSetAtom(authAtom);
@@ -67,7 +66,7 @@ export default function SettingsPage() {
           const data = await res.json();
           if (data?.plan === "pro" || data?.plan === "free") setPlan(data.plan);
         }
-      } catch (e) {
+      } catch {
         // non-blocking
       } finally {
         setLoadingProfile(false);
@@ -134,8 +133,10 @@ export default function SettingsPage() {
       setNewPassword("");
       setConfirmPassword("");
       showMsg("Password updated successfully.");
-    } catch (e: any) {
+    } catch (e: unknown) {
+      if (e instanceof Error) {
       showMsg(e.message || "Something went wrong.", "destructive");
+      }
     } finally {
       setSavingPassword(false);
     }
@@ -160,8 +161,10 @@ export default function SettingsPage() {
       if (!res.ok) throw new Error(data?.message || "Failed to update subscription.");
 
       showMsg(`Subscription changed to ${plan === "pro" ? "Pro" : "Free"}.`);
-    } catch (e: any) {
-      showMsg(e.message || "Something went wrong.", "destructive");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        showMsg(e.message || "Something went wrong.", "destructive");
+      }
     } finally {
       setSavingPlan(false);
     }
@@ -321,7 +324,7 @@ export default function SettingsPage() {
             variant="outlined"
             color="error"
             onClick={() => {
-              setAuth({ token: null, email: "" });
+              setAuth({ token: null, email: "", userName: "" });
               if (typeof window !== "undefined") localStorage.removeItem("token");
               router.push("/login");
             }}
