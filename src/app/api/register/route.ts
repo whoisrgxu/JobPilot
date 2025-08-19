@@ -41,16 +41,26 @@ export async function POST(req: Request) {
     });
 
     const activationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/activate?token=${token}`;
-
-    await sendEmail({
-      to: email,
-      subject: "Activate your account",
-      html: `
+    
+    // Customize the email body based on premium status
+    const emailBody = isPremium
+      ? `
+        <p>Hi ${userName},</p>
+        <p>Thanks for registering. Please activate your account and continue to the payment page:</p>
+        <p><a href="${activationUrl}">Activate and Continue to Payment</a></p>
+        <p>This link expires in 24 hours.</p>
+      `
+      : `
         <p>Hi ${userName},</p>
         <p>Thanks for registering. Please activate your account:</p>
         <p><a href="${activationUrl}">Activate account</a></p>
         <p>This link expires in 24 hours.</p>
-      `,
+      `;
+
+    await sendEmail({
+      to: email,
+      subject: "Activate your account",
+      html: emailBody,
     });
 
     return NextResponse.json(

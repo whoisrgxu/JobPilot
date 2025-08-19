@@ -28,8 +28,8 @@ export async function GET(req: Request) {
     user.isActive = true;
     user.emailVerificationTokenHash = null;
     user.emailVerificationExpires = null;
-    await user.save();
 
+    await user.save();
     // If you want to delay premium payment until after activation, do it here or on /registerSuccess
     return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/registerSuccess`);
   } catch {
