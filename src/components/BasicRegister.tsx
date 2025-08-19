@@ -60,6 +60,7 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
       const data = await res.json();
 
       if (res.ok) {
+
         setStatus("Registration successful! Please check your email to activate your account.")
         setEmail("");
         setPassword("");
@@ -67,9 +68,9 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
         if (isPremium) {
           localStorage.setItem("PremiumRegisteringInProgress", "true"); // Flag to indicate premium registration
           localStorage.setItem("registeringEmail", email); // Store email for payment page
-          setTimeout(() => {
-            router.push("/payment");
-          }, 100); // 100ms is enough to ensure write is flushed
+          // setTimeout(() => {
+          //   router.push("/payment");
+          // }, 100); // 100ms is enough to ensure write is flushed
 
         } else{
           // router.push("registerSuccess");
