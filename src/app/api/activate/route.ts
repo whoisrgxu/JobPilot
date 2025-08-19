@@ -30,11 +30,11 @@ export async function GET(req: Request) {
     user.emailVerificationExpires = null;
 
     await user.save();
-    const isPremium = user.isPremium;
+    const premiumPending = user.premiumPending;
   
     // If you want to delay premium payment until after activation, do it here or on /registerSuccess
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}/registerSuccess?premium=${isPremium}`
+      `${process.env.NEXT_PUBLIC_APP_URL}/registerSuccess?premium=${premiumPending}`
     );
   } catch {
     return NextResponse.json({ message: "Server error." }, { status: 500 });

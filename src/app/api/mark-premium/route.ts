@@ -1,28 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
-import User from "@/models/user";
+//connect to database and update isPremium status to true
+import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
+import User from "@/models/user"; 
 
-export async function POST(req: NextRequest) {
-  await connectDB();
-
-  const { email } = await req.json();
-
+export async function POST(req: Request) {
   try {
-    const updated = await User.findOneAndUpdate(
-      { email },
-      { isPremium: true },
-      { new: true }
-    );
+    await connectDB();
+    const { email } = await req.json();
 
-    if (!updated) {
-      return NextResponse.json({ message: "User not found." }, { status: 404 });
+    if (!email) {
+      return NextResponse.json({ message: "Email is required" }, { status: 400 });
     }
 
-    return NextResponse.json({ message: "User upgraded to premium." });
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    user.isPremium = true;
+    user.premiumPending = false; // Mark premium as active
+    await user.save();
+
+    return NextResponse.json({ message: "User marked as premium successfully" }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { message: "Error updating user", error },
-      { status: 500 }
-    );
+    console.error("Error marking user as premium:", error);
+    return NextResponse.json({ message: "Server error." }, { status: 500 });
   }
 }

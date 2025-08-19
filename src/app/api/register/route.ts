@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       password: hashedPassword,
       usageCount: 0,
       lastReset: new Date(),
-      isPremium: !!isPremium,
+      premiumPending: !!isPremium,
       isActive: false,
       emailVerificationTokenHash: tokenHash,
       emailVerificationExpires: expires,
