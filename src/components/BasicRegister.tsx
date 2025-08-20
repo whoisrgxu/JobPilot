@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 
 
 interface BasicRegisterProps {
@@ -15,7 +14,6 @@ interface BasicRegisterProps {
 
 export default function BasicRegister({ isPremium }: BasicRegisterProps) {
 
-  const router = useRouter();
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

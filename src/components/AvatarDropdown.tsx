@@ -13,7 +13,6 @@ import {
   Menu,
   MenuItem,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
