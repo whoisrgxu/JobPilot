@@ -12,11 +12,11 @@ export function useAuthHydration() {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        setAuth({ token, email: payload.email });
+        setAuth({ token, userName: payload.userName, email: payload.email });
       } catch {
         // invalid token
         localStorage.removeItem('token');
-        setAuth({ token: '', email: '' });
+        setAuth({ token: '', email: '', userName: '' });
       }
     }
   }, [setAuth]);

@@ -63,9 +63,11 @@ describe('POST /api/login', () => {
 
   it('returns 200 and token for valid credentials', async () => {
     const mockUser = {
+      userName: 'testuser',
       email: 'user@example.com',
       password: 'hashed',
       isPremium: true,
+      isActive: true
     };
 
     (User.findOne as jest.Mock).mockResolvedValue(mockUser);
@@ -83,6 +85,6 @@ describe('POST /api/login', () => {
 
     expect(res.status).toBe(200);
     expect(body.token).toBe('mocked-token');
-    expect(signToken).toHaveBeenCalledWith({ email: 'user@example.com', isPremium: true });
+    expect(signToken).toHaveBeenCalledWith({ email: 'user@example.com', isPremium: true, userName: 'testuser', isActive: true });
   });
 });

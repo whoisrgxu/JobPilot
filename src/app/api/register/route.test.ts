@@ -5,6 +5,7 @@
 import { POST } from './route';
 import User from '@/models/user';
 import bcrypt from 'bcryptjs';
+// import { use } from 'react';
 
 // Mocks
 jest.mock('@/lib/db', () => ({
@@ -18,6 +19,10 @@ jest.mock('@/models/user', () => ({
 
 jest.mock('bcryptjs', () => ({
   hash: jest.fn(),
+}));
+
+jest.mock('@/lib/sendEmail', () => ({
+  sendEmail: jest.fn(),
 }));
 
 describe('POST /api/register', () => {
@@ -36,7 +41,7 @@ describe('POST /api/register', () => {
     const body = await res.json();
 
     expect(res.status).toBe(400);
-    expect(body.message).toBe('Email and password are required.');
+    expect(body.message).toBe('User name, Email and password are required.');
   });
 
   it('returns 409 if email is already registered', async () => {
@@ -45,7 +50,7 @@ describe('POST /api/register', () => {
     const req = new Request('http://localhost/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'test@example.com', password: '123456' }),
+      body: JSON.stringify({ userName: 'test', email: 'test@example.com', password: '123456' }),
     });
 
     const res = await POST(req);
@@ -64,6 +69,7 @@ describe('POST /api/register', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        userName: 'New User',
         email: 'new@example.com',
         password: 'secure123',
         isPremium: true,
@@ -74,14 +80,19 @@ describe('POST /api/register', () => {
     const body = await res.json();
 
     expect(res.status).toBe(201);
-    expect(body.message).toBe('User registered successfully.');
-    expect(User.create).toHaveBeenCalledWith({
+    expect(body.message).toBe('User registered. Please check your email to activate your account.');
+    expect(User.create).toHaveBeenCalledWith(expect.objectContaining({
       email: 'new@example.com',
       password: 'hashedPassword',
       usageCount: 0,
+      isActive: false,
+      userName: 'New User',
+      premiumPending: true,
       lastReset: expect.any(Date),
-      isPremium: true,
-    });
+      emailVerificationExpires: expect.any(Date),
+      emailVerificationTokenHash: expect.any(String),
+    }));
+
   });
 
   it('returns 500 on unexpected error', async () => {
@@ -91,6 +102,7 @@ describe('POST /api/register', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        userName: 'Fail User',
         email: 'fail@example.com',
         password: '123',
       }),

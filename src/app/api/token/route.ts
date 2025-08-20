@@ -10,6 +10,8 @@ export async function GET(req: NextRequest) {
     await connectDB();
     const tempToken = await getToken({ req }); // get decoded JWT payload
     const email = tempToken?.email;
+    const userName = tempToken?.userName;
+    console.log("Decoded userName:", userName);
     let isPremium = false; // Default value
     //check db to see if user exists
     if (email) {
@@ -21,6 +23,6 @@ export async function GET(req: NextRequest) {
             isPremium = false; // Default to false if user not found
         }       
     }
-    const token = signToken({ email, isPremium });
+    const token = signToken({ userName, email, isPremium });
   return NextResponse.json({ token }, { status: 200 });
 }

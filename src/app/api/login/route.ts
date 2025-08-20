@@ -13,8 +13,12 @@ export async function POST(req: Request) {
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
   }
+  if (!user.isActive) {
+    return NextResponse.json({ message: "Account not activated. Please check your email." }, { status: 403 });
+  }
   const isPremium = user.isPremium;
-  const token = signToken({ email, isPremium });
-
+  const userName = user.userName;
+  const isActive = user.isActive;
+  const token = signToken({ userName, email, isPremium, isActive });
   return NextResponse.json({ token }, { status: 200 });
 }
