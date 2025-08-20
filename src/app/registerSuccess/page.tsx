@@ -1,6 +1,12 @@
 import RegisterSuccess from "./RegisterSuccess";
 
-export default function RegisterSuccessPage({ searchParams }: { searchParams: { premium?: string } }) {
-  const isPremium = searchParams.premium === "true";
+export default async function RegisterSuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ premium?: string }>;
+}) {
+  const params = await searchParams;
+  const isPremium = params.premium === "true";
+
   return <RegisterSuccess isPremium={isPremium} />;
 }
