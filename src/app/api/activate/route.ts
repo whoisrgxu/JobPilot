@@ -24,10 +24,14 @@ export async function GET(req: Request) {
     if (!user) {
       return NextResponse.json({ message: "Invalid or expired token" }, { status: 400 });
     }
-
+    // if emailVerificationTokenConsumed
+    if (user.emailVerificationTokenConsumedAt) {
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_APP_URL}/registerSuccess?premium=${user.premiumPending}`
+      )
+    }
     user.isActive = true;
-    user.emailVerificationTokenHash = null;
-    user.emailVerificationExpires = null;
+    user.emailVerificationTokenConsumedAt = new Date();
 
     await user.save();
     const premiumPending = user.premiumPending;

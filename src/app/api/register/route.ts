@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       premiumPending: !!isPremium,
       isActive: false,
       emailVerificationTokenHash: tokenHash,
-      emailVerificationExpires: expires,
+      emailVerificationExpires: expires
     });
 
     const activationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/activate?token=${token}`;

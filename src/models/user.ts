@@ -11,6 +11,7 @@ const userSchema = new Schema({
   isActive: { type: Boolean, default: false }, // This is new.Has to adjust the login page and api so that it can handle this
   emailVerificationTokenHash: { type: String, default: null }, // New
   emailVerificationExpires: { type: Date, default: null }, // New
+  emailVerificationTokenConsumedAt: { type: Date, default: null } // New
 });
 
 const User = models.User || model("User", userSchema);
