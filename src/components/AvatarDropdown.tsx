@@ -12,7 +12,7 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
-  Tooltip,
+  Tooltip
 } from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -99,19 +99,21 @@ export default function AvatarDropdown() {
         onClose={() => setAnchorEl(null)}
         TransitionComponent={Fade}
         transitionDuration={140}
-        PaperProps={{
-          elevation: 6,
-          sx: {
-            mt: 1,
-            minWidth: 150,
-            borderRadius: 2,
-            overflow: "visible",
-            border: 1,
-            borderColor: "divider",
-            "& .MuiMenuItem-root": { fontSize: 14 },
-          },
-          onMouseEnter: handleMouseEnterMenu,
-          onMouseLeave: handleMouseLeaveMenu,
+        slotProps={{
+          paper: {
+            elevation: 6,
+            sx: {
+              mt: 1,
+              minWidth: 150,
+              borderRadius: 2,
+              overflow: "visible",
+              border: 1,
+              borderColor: "divider",
+              "& .MuiMenuItem-root": { fontSize: 14 },
+            },
+            onMouseEnter: handleMouseEnterMenu,
+            onMouseLeave: handleMouseLeaveMenu,
+          }
         }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
