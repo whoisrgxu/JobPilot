@@ -11,6 +11,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@datadog/browser-rum": "^6.19.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@google/genai": "^1.1.0",
@@ -25,6 +26,7 @@
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dd-trace": "^5.67.0",
     "framer-motion": "^12.23.12",
     "jotai": "^2.12.5",
     "jsonwebtoken": "^9.0.2",
