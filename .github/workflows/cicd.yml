@@ -14,6 +14,7 @@ jobs:
       - name: Skip on merge commit to development
         if: github.ref == 'refs/heads/development' && github.event.head_commit.parents[1] != null
         run: echo "Merge commit to development, skipping CI." && exit 0
+
       - uses: actions/checkout@v4
 
       - name: Use Node.js
@@ -22,7 +23,7 @@ jobs:
           node-version: 18.20.4
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci   # use ci instead of install for reproducibility
 
       - name: Type check
         run: npm run type-check
@@ -30,8 +31,22 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Run tests
+      - name: Run unit tests
         run: npm test
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright E2E tests
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+
 
   deploy-preview:
     if: github.ref == 'refs/heads/development' && github.event.head_commit.parents[1] == null

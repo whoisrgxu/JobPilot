@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test:e2e": "playwright test"
+
   },
   "dependencies": {
     "@datadog/browser-rum": "^6.19.0",
@@ -49,6 +51,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.55.1",
     "@tailwindcss/postcss": "^4",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
