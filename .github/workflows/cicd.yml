@@ -38,7 +38,16 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright E2E tests
-        run: npx playwright test
+        run: npx playwright test --reporter=html
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+          GOOGLE_MODEL: ${{ secrets.GOOGLE_MODEL}}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_MODEL_FALLBACK: ${{secrets.GOOGLE_MODEL_FALLBACK}}
+
 
       - name: Upload Playwright report
         if: always()

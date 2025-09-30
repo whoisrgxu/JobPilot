@@ -10,7 +10,6 @@
     "test": "jest",
     "type-check": "tsc --noEmit",
     "test:e2e": "playwright test"
-
   },
   "dependencies": {
     "@datadog/browser-rum": "^6.19.0",
