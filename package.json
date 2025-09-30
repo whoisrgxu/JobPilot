@@ -22,6 +22,7 @@
     "@stripe/stripe-js": "^7.3.1",
     "@upstash/ratelimit": "^2.0.5",
     "@upstash/redis": "^1.35.0",
+    "aws-lambda": "^1.0.7",
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -48,6 +49,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/aws-lambda": "^8.10.152",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20",

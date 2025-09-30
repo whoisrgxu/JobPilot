@@ -49,7 +49,7 @@ export default function BasicRegister({ isPremium }: BasicRegisterProps) {
     setStatus("Registering...");
 
     try {
-      const res = await fetch("/api/register", {
+      const res = await fetch("https://mbcjvhws7i.execute-api.ca-central-1.amazonaws.com/DEV/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userName, email, password, isPremium }),

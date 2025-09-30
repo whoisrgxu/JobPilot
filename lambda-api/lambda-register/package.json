@@ -1,0 +1,21 @@
+{
+  "name": "lambda-register",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "bcryptjs": "^3.0.2",
+    "nodemailer": "^7.0.6"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.152",
+    "typescript": "^5.9.2"
+  }
+}
