@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/lambda-api/lambda-register/node_modules
+/lambda-api/lambda-register/dist
 /.pnp
 .pnp.*
 .yarn/*
