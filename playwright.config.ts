@@ -1,12 +1,12 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './pwtests',
+  testDir: './pwTests',
   use: {
     baseURL: 'http://localhost:3000',
-    headless: false,
+    headless: !!process.env.CI,  // 👈 true in CI, false locally
     launchOptions: {
-      slowMo: 2000, // slow down actions by 500ms
+      slowMo: process.env.CI ? 0 : 2000,
     },
 
   },
