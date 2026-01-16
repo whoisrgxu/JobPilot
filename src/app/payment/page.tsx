@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
@@ -16,14 +16,13 @@ import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-function CheckoutForm() {
+function CheckoutForm({ paymentEmail }: { paymentEmail: string | null }) {
   const stripe = useStripe();
   const elements = useElements();
-  const email = typeof window !== 'undefined' ? localStorage.getItem("registeringEmail") : null;
 
   const [name, setName] = useState('');
   const [status, setStatus] = useState('');
@@ -55,13 +54,15 @@ function CheckoutForm() {
       setStatus(`Payment failed: ${result.error.message}`);
     } else if (result.paymentIntent?.status === 'succeeded') {
       setStatus('✅ Payment successful!');
-      if (email) {
+      if (paymentEmail) {
         await fetch('/api/mark-premium', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email: paymentEmail }),
         });
         localStorage.removeItem("registeringEmail");
+      } else {
+        setStatus('Payment successful, but missing account email.');
       }
     }
     setIsLoading(false);
@@ -156,24 +157,69 @@ function CheckoutForm() {
 export default function PaymentPage() {
 
   const router = useRouter();
-  const hasValidate = useRef(false);
+  const searchParams = useSearchParams();
+  const [paymentEmail, setPaymentEmail] = useState<string | null>(null);
+  const [accessState, setAccessState] = useState<'checking' | 'allowed' | 'denied'>('checking');
+  const payToken = searchParams.get("token");
+
   useEffect(() => {
-    if (hasValidate.current) return;
-    hasValidate.current = true;
-    const PremiumRegisteringInProgress = localStorage.getItem("PremiumRegisteringInProgress");
-    console.log("PremiumRegisteringInProgress: ", PremiumRegisteringInProgress);
-    if (PremiumRegisteringInProgress !== "true") {
-      router.replace("/login"); 
-    } else {
-      // Delay removal to avoid race condition on re-runs
-      setTimeout(() => {
-        localStorage.removeItem("PremiumRegisteringInProgress");
-      }, 1000);
-    }
-  }, [router]);
+    let cancelled = false;
+    const checkAccess = async () => {
+      const authToken = localStorage.getItem("token");
+      if (!payToken && !authToken) {
+        setAccessState('denied');
+        router.replace("/login");
+        return;
+      }
+
+      const headers: HeadersInit = {};
+      let url = "/api/payment-access";
+      if (payToken) {
+        url += `?token=${encodeURIComponent(payToken)}`;
+      } else if (authToken) {
+        headers.Authorization = `Bearer ${authToken}`;
+      }
+
+      try {
+        const res = await fetch(url, { headers });
+        const data = await res.json();
+        if (!res.ok || !data?.allowed || !data.email) {
+          if (!cancelled) {
+            setAccessState('denied');
+            router.replace("/login");
+          }
+          return;
+        }
+        if (!cancelled) {
+          setPaymentEmail(data.email);
+          setAccessState('allowed');
+        }
+      } catch {
+        if (!cancelled) {
+          setAccessState('denied');
+          router.replace("/login");
+        }
+      }
+    };
+
+    checkAccess();
+    return () => {
+      cancelled = true;
+    };
+  }, [router, payToken]);
+
+  if (accessState !== 'allowed') {
+    const message = accessState === 'checking' ? "Checking access..." : "Redirecting to login...";
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center text-gray-700 dark:text-gray-300 gap-2">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span>{message}</span>
+      </div>
+    );
+  }
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm />
+      <CheckoutForm paymentEmail={paymentEmail} />
     </Elements>
   );
 }
