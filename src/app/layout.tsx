@@ -7,6 +7,7 @@ import NavMenu from '@/components/NavMenu';
 import Footer from "@/components/Footer";
 import InactivityWrapper from '@/components/InactivityWrapper'
 import ClientHydrate from '@/components/ClientHydrate';
+import DatadogRumProvider from "@/components/DatadogRumProvider";
 
 
 const geistSans = Geist({
@@ -34,6 +35,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+         {/* Initialize Datadog RUM here */}
+        <DatadogRumProvider />
+
         <InactivityWrapper>
           <ClientHydrate />
           <main>
