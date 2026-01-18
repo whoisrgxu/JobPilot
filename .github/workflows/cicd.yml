@@ -9,6 +9,14 @@ on:
 jobs:
   ci-check:
     runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+      GOOGLE_MODEL: ${{ secrets.GOOGLE_MODEL}}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      GOOGLE_MODEL_FALLBACK: ${{secrets.GOOGLE_MODEL_FALLBACK}}
 
     steps:
       - name: Skip on merge commit to development
@@ -36,18 +44,13 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+        
+      - name: Check env present (no leak)
+        run: |
+          node -e "console.log('GOOGLE_MODEL', process.env.GOOGLE_MODEL ? 'present' : 'MISSING')"
 
       - name: Run Playwright E2E tests
         run: npx playwright test --reporter=html
-        env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
-          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
-          GOOGLE_MODEL: ${{ secrets.GOOGLE_MODEL}}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          GOOGLE_MODEL_FALLBACK: ${{secrets.GOOGLE_MODEL_FALLBACK}}
-
 
       - name: Upload Playwright report
         if: always()
