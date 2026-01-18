@@ -5,8 +5,8 @@ import { ratelimit } from "@/lib/rateLimiter";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
-const DEFAULT_MODEL = process.env.GOOGLE_MODEL || 'gemini-2.0-flash';
-const FALLBACK_MODEL = process.env.GOOGLE_MODEL_FALLBACK || 'gemini-2.0-flash-lite';
+const DEFAULT_MODEL = process.env.GOOGLE_MODEL || 'gemini-2.5-flash';
+const FALLBACK_MODEL = process.env.GOOGLE_MODEL_FALLBACK || 'gemini-2.5-flash-lite';
 
 export async function POST(req: Request) {
   try {
