@@ -44,10 +44,6 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-        
-      - name: Check env present (no leak)
-        run: |
-          node -e "console.log('GOOGLE_MODEL', process.env.GOOGLE_MODEL ? 'present' : 'MISSING')"
 
       - name: Run Playwright E2E tests
         run: npx playwright test --reporter=html
