@@ -13,6 +13,7 @@ export async function POST(req: Request) {
     console.log("route entered.");
     const contentType = req.headers.get("content-type");
     console.log("headers", req.headers);
+    const isE2E = process.env.E2E_TESTING === "1";
     let resume: string | Buffer;
     let job: string;
     let email: string;
@@ -44,6 +45,19 @@ export async function POST(req: Request) {
       }
     } else {
       return new Response("Unsupported content type", { status: 400 });
+    }
+
+    if (isE2E) {
+      const mockOutput = {
+        matchScore: 82,
+        strengths: ["Relevant experience aligns with the role", "Clear project ownership"],
+        gaps: ["Missing specific tooling mentioned in the job"],
+        suggestions: ["Highlight measurable impact", "Add keywords from the job post"],
+        summary: "Solid fit with a few targeted improvements needed.",
+      };
+      return new Response(JSON.stringify({ output: JSON.stringify(mockOutput) }), {
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Check if user has exceeded usage limits
