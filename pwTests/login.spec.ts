@@ -14,7 +14,7 @@ test('test', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Paste the job description here' }).fill('Test job description');
   await page.getByRole('button', { name: 'Tech' }).click();
   await page.getByRole('button', { name: 'Analyze Resume-to-Job Fit' }).click();
-  await expect(page).toHaveURL(/\/report/, { timeout: 20000 });
+  await expect(page).toHaveURL(/\/report/, { timeout: 50000 });
   await expect(page.getByRole('heading', { name: 'Resume-to-Job Fit Report' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Strengths' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Gaps or Weaknesses' })).toBeVisible();

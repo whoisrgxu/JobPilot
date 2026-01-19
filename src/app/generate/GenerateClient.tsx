@@ -119,19 +119,38 @@ export default function GenerateClient() {
       });
 
       const data = await response.json();
+      if (!response.ok) {
+        console.error("Generate failed:", {
+          status: response.status,
+          statusText: response.statusText,
+          output: data?.output,
+        });
+      }
       if (data.output === "User has not registered. Register first before use.") {
+        console.warn("Generate blocked: unregistered user", {
+          status: response.status,
+          output: data.output,
+        });
         setShowAlert(true);
         setAlertMessage("User has not registered. Register first.");
         return;
       }
 
       if (data.output === "Usage limit reached. Please upgrade.") {
+        console.warn("Generate blocked: usage limit", {
+          status: response.status,
+          output: data.output,
+        });
         setShowAlert(true);
         setAlertMessage("Usage limit reached. Please upgrade.");
         return;
       }
 
       if (data.output === "Usage temporarily limited. Please wait and try again shortly.") {
+        console.warn("Generate blocked: rate limit", {
+          status: response.status,
+          output: data.output,
+        });
         setShowAlert(true);
         setAlertMessage("Usage temporarily limited. Please wait and try again shortly.");
         return;
